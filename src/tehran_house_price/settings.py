@@ -35,9 +35,10 @@ class AppSettings(BaseSettings):
     app_env: str = Field(default="dev")
     log_level: str = Field(default="INFO")
 
-    # kaggle
+    # kaggle (both old and new auth styles supported)
     kaggle_username: str | None = None
     kaggle_key: str | None = None
+    kaggle_api_token: str | None = None
 
 
 def load_yaml_config(path: Path | None = None) -> dict[str, Any]:
