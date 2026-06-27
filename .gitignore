@@ -1,0 +1,44 @@
+# virtual env
+thpenv/
+.venv/
+venv/
+
+# python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# env files
+.env
+
+# jupyter
+.ipynb_checkpoints/
+
+# editor / os
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# data
+data/raw/*
+!data/raw/.gitkeep
+
+data/interim/*
+!data/interim/.gitkeep
+
+data/processed/*
+!data/processed/.gitkeep
+
+# logs
+logs/*
+!logs/.gitkeep
+
+# artifacts
+artifacts/data_validation/*
+!artifacts/data_validation/.gitkeep
