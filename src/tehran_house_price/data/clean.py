@@ -177,6 +177,33 @@ def add_missing_optional_cols(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def normalize_output_dtypes(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Finalize dtypes so the parquet output is predictable for downstream code.
+
+    چرا اینجا و نه فقط در validate?
+        validate() قبل از validation کارش را می‌کند، ولی parquet خروجی همچنان
+        با dtype های اولیه ذخیره می‌شد. این باعث می‌شد ستون‌های nullable به‌صورت
+        'object' ذخیره شوند. اینجا dtype های نهایی را تثبیت می‌کنیم تا
+        مصرف‌کننده‌ی processed parquet با ستون‌های float تمیز کار کند، نه با
+        object هایی که فقط NA دارند.
+
+    تغییرات اعمال‌شده:
+        - area_m2: float (یکدست با schema)
+        - year_built, floor, total_floors: float64 (می‌تواند NaN داشته باشد)
+    """
+    df = df.copy()
+
+    if const.AREA_M2 in df.columns:
+        df[const.AREA_M2] = df[const.AREA_M2].astype(float)
+
+    for col in (const.YEAR_BUILT, const.FLOOR, const.TOTAL_FLOORS):
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce").astype(float)
+
+    return df
+
+
 def drop_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     """Drop rows where listing_id duplicates."""
     n_before = len(df)
@@ -192,7 +219,8 @@ def clean_kaggle(df: pd.DataFrame) -> pd.DataFrame:
     Full cleaning pipeline for kaggle data.
 
     Order matters here. For example, listing_id depends on source and district,
-    so add_source must run first.
+    so add_source must run first. normalize_output_dtypes در آخر اجرا می‌شود
+    تا dtype های نهایی برای ذخیره parquet تثبیت شوند.
     """
     df = drop_unused_columns(df)
     df = rename_to_canonical(df)
@@ -208,6 +236,7 @@ def clean_kaggle(df: pd.DataFrame) -> pd.DataFrame:
     df = add_timestamps(df)
     df = add_missing_optional_cols(df)
     df = drop_duplicates(df)
+    df = normalize_output_dtypes(df)
     return df
 
 
