@@ -102,5 +102,8 @@ MAX_ROOMS: Final[int] = 15
 MIN_YEAR_BUILT: Final[int] = 1300  # شمسی، حدوداً 1920 میلادی
 MAX_YEAR_BUILT: Final[int] = 1430  # حدود 2050 میلادی، حاشیه گذاشتم
 
-MIN_PRICE_IRR: Final[float] = 1e8  # 100 million toman, lower bound sanity
-MAX_PRICE_IRR: Final[float] = 1e13  # 10 trillion, upper bound sanity
+# قیمت در dataset ها به تومان است (نه ریال) چون این norm بازار ایران است.
+# اسم متغیر را برای سازگاری history نگه می‌داریم ولی unit در docstring مشخص است.
+# bounds: from ~100M toman (cheap apartment) up to ~1T toman (luxury).
+MIN_PRICE_IRR: Final[float] = 1e8
+MAX_PRICE_IRR: Final[float] = 1e12

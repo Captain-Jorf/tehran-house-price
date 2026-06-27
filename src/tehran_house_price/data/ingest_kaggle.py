@@ -1,53 +1,48 @@
 """
 Kaggle ingestion.
 
-از Kaggle API استفاده می‌کنیم تا dataset را دانلود و در data/raw/kaggle/
-بنویسیم. raw data immutable است؛ هر چیزی در پیپ‌لاین cleaning بعداً
-به interim می‌رود.
-
-برای اجرا:
-    python -m tehran_house_price.data.ingest_kaggle
-    python -m tehran_house_price.data.ingest_kaggle --force
+Uses kagglehub when possible. Falls back to manual instructions if
+consent is required (which is the case for this particular dataset).
 """
 
 from __future__ import annotations
 
+import argparse
 import os
 import shutil
+import sys
 from pathlib import Path
-
-import typer
 
 from tehran_house_price.settings import get_config, get_settings
 from tehran_house_price.utils.logger import get_logger
 from tehran_house_price.utils.paths import ensure_dir, raw_dir
 
 log = get_logger(__name__)
-app = typer.Typer(add_completion=False, no_args_is_help=False)
+
+
+MANUAL_DOWNLOAD_HINT = """\
+Could not download dataset automatically (likely consent required).
+
+To proceed manually:
+  1. Open: https://www.kaggle.com/datasets/{dataset}
+  2. Accept terms / click Download
+  3. Extract the zip into: {target}
+  4. Re-run this command
+"""
 
 
 def _setup_kaggle_env() -> None:
-    """
-    Push kaggle credentials into os.environ before importing the kaggle module.
-
-    Supports both auth styles:
-      - new: KAGGLE_API_TOKEN (KGAT_...)
-      - old: KAGGLE_USERNAME + KAGGLE_KEY (from kaggle.json)
-    """
     settings = get_settings()
-
     if settings.kaggle_api_token:
         os.environ["KAGGLE_API_TOKEN"] = settings.kaggle_api_token
         return
-
     if settings.kaggle_username and settings.kaggle_key:
         os.environ["KAGGLE_USERNAME"] = settings.kaggle_username
         os.environ["KAGGLE_KEY"] = settings.kaggle_key
         return
-
     raise RuntimeError(
-        "Kaggle credentials missing. set KAGGLE_API_TOKEN (new) or "
-        "KAGGLE_USERNAME + KAGGLE_KEY (old) in .env"
+        "Kaggle credentials missing. set KAGGLE_API_TOKEN or "
+        "KAGGLE_USERNAME + KAGGLE_KEY in .env"
     )
 
 
@@ -57,69 +52,86 @@ def _target_dir() -> Path:
     return ensure_dir(raw_dir() / subdir)
 
 
+def _list_csv_files(target: Path) -> list[Path]:
+    return sorted(target.glob("*.csv"))
+
+
 def _is_already_downloaded(target: Path) -> bool:
-    # very simple check: any csv file present means we have something
-    return any(target.glob("*.csv"))
+    return len(_list_csv_files(target)) > 0
+
+
+def _copy_files(src_dir: Path, dst_dir: Path) -> list[str]:
+    copied: list[str] = []
+    for item in src_dir.rglob("*"):
+        if item.is_file():
+            dest = dst_dir / item.name
+            shutil.copy2(item, dest)
+            copied.append(dest.name)
+    return copied
+
+
+def _clean_target(target: Path) -> None:
+    for item in target.iterdir():
+        if item.is_dir():
+            shutil.rmtree(item)
+        elif item.name != ".gitkeep":
+            item.unlink()
 
 
 def download_dataset(force: bool = False) -> Path:
-    """
-    Download the Tehran house price dataset from Kaggle into data/raw/kaggle/.
-
-    Returns the directory where files were placed.
-    """
     cfg = get_config()
     dataset_ref = cfg["data"]["kaggle"]["dataset"]
     target = _target_dir()
 
-    if _is_already_downloaded(target) and not force:
-        log.info("dataset already exists at %s. use --force to re-download", target)
-        return target
+    has_data = _is_already_downloaded(target)
+    log.info("target=%s | has_data=%s | force=%s", target, has_data, force)
 
-    if force and target.exists():
-        log.info("force mode: cleaning %s", target)
-        # only delete contents, keep the directory itself
-        for item in target.iterdir():
-            if item.is_dir():
-                shutil.rmtree(item)
-            else:
-                item.unlink()
+    if has_data and not force:
+        files = [p.name for p in _list_csv_files(target)]
+        log.info("dataset already present: %s", files)
+        return target
 
     _setup_kaggle_env()
 
-    # NOTE: importing kaggle at module top would try to authenticate at
-    # import time, which is bad if creds are missing. so we do it lazily.
-    from kaggle.api.kaggle_api_extended import KaggleApi
+    try:
+        import kagglehub
 
-    api = KaggleApi()
-    api.authenticate()
+        log.info("attempting kagglehub download for '%s'", dataset_ref)
+        cache_path = Path(kagglehub.dataset_download(dataset_ref))
+        log.info("kagglehub cached files at %s", cache_path)
+    except Exception as e:
+        msg = str(e).lower()
+        if any(x in msg for x in ("403", "forbidden", "consent", "permission")):
+            hint = MANUAL_DOWNLOAD_HINT.format(dataset=dataset_ref, target=target)
+            log.error(hint)
+            raise RuntimeError("automatic download failed - see instructions above") from e
+        raise
 
-    log.info("downloading dataset '%s' to %s", dataset_ref, target)
-    api.dataset_download_files(
-        dataset_ref,
-        path=str(target),
-        unzip=True,
-        quiet=False,
-    )
-
-    files = sorted(p.name for p in target.iterdir() if p.is_file())
-    log.info("downloaded %d files: %s", len(files), files)
-
+    log.info("download ok; refreshing %s", target)
+    _clean_target(target)
+    copied = _copy_files(cache_path, target)
+    log.info("copied %d files: %s", len(copied), copied)
     return target
 
 
-@app.command()
-def main(
-    force: bool = typer.Option(False, "--force", "-f", help="re-download even if files exist"),
-) -> None:
-    """CLI entrypoint for kaggle ingestion."""
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Download Tehran house price dataset from Kaggle.")
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="re-download even if files exist",
+    )
+    args = parser.parse_args()
+
     try:
-        target = download_dataset(force=force)
-        typer.echo(f"done. files are in: {target}")
+        target = download_dataset(force=args.force)
+        print(f"done. files are in: {target}")
+        return 0
     except Exception as e:
         log.error("ingestion failed: %s", e)
-        raise typer.Exit(code=1) from e
+        return 1
 
 
 if __name__ == "__main__":
-    app()
+    sys.exit(main())
