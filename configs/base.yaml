@@ -1,0 +1,28 @@
+project:
+  name: tehran_house_price
+  version: 0.1.0
+
+data:
+  raw_dir: data/raw
+  interim_dir: data/interim
+  processed_dir: data/processed
+  external_dir: data/external
+
+  kaggle:
+    dataset: mokar2001/house-price-tehran-iran
+    raw_subdir: kaggle
+
+  divar:
+    raw_subdir: divar
+    base_url: https://divar.ir
+    request_delay_sec: 2.0
+    max_retries: 3
+    timeout_sec: 15
+
+artifacts:
+  base_dir: artifacts
+  validation_subdir: data_validation
+
+processed:
+  output_filename: tehran_houses.parquet
+  format: parquet

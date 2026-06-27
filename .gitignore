@@ -1,44 +1,81 @@
-# virtual env
+# venv
 thpenv/
 .venv/
 venv/
+env/
 
 # python
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# tests / coverage
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
 .coverage
+.coverage.*
 htmlcov/
-
-# env files
-.env
+.tox/
+coverage.xml
+*.cover
 
 # jupyter
 .ipynb_checkpoints/
+*.ipynb_checkpoints
 
-# editor / os
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# data
-data/raw/*
+# secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# data (keep folders, ignore content)
+data/raw/**
 !data/raw/.gitkeep
+!data/raw/kaggle/.gitkeep
+!data/raw/divar/.gitkeep
 
-data/interim/*
+data/interim/**
 !data/interim/.gitkeep
 
-data/processed/*
+data/processed/**
 !data/processed/.gitkeep
+
+data/external/**
+!data/external/.gitkeep
 
 # logs
 logs/*
 !logs/.gitkeep
 
 # artifacts
-artifacts/data_validation/*
+artifacts/**
+!artifacts/.gitkeep
 !artifacts/data_validation/.gitkeep
+
+# mlflow
+mlruns/
+mlartifacts/
+
+# docker
+*.pid

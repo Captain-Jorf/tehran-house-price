@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tehran_house_price"
+version = "0.1.0"
+description = "End-to-end MLOps pipeline for Tehran house price prediction"
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+authors = [
+    { name = "Captain-Jorf" }
+]
+license = { text = "MIT" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+# ----- ruff -----
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "N"]
+ignore = ["E501"]
+
+# ----- black -----
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+# ----- pytest -----
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra -q --strict-markers"
+markers = [
+    "slow: marks tests as slow",
+    "integration: integration tests",
+]
+
+# ----- coverage -----
+[tool.coverage.run]
+source = ["src/tehran_house_price"]
+omit = ["*/tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+
+# ----- mypy -----
+[tool.mypy]
+python_version = "3.10"
+strict_optional = true
+ignore_missing_imports = true
