@@ -30,6 +30,13 @@ class HouseListingSchema(pa.DataFrameModel):
 
     این schema روی processed data اعمال می‌شود، نه روی raw. raw data
     معمولاً کثیف است و این validation روی آن fail می‌شود (که خوب است).
+
+    Note on nullable numeric columns (year_built, floor, total_floors):
+        pandas nullable integers (Int64) و numpy int64 با هم سازگار نیستند
+        وقتی مقادیر NA داشته باشیم. به همین دلیل این ستون‌ها را به عنوان
+        float تعریف می‌کنیم - float می‌تواند NaN داشته باشد و pandera
+        بدون مشکل coerce می‌کند. در pydantic schema این ستون‌ها همچنان
+        int | None هستند چون pydantic record-level کار می‌کند.
     """
 
     listing_id: Series[str] = pa.Field(unique=True, nullable=False)
@@ -48,13 +55,17 @@ class HouseListingSchema(pa.DataFrameModel):
         le=const.MAX_ROOMS,
         nullable=False,
     )
-    year_built: Series[int] = pa.Field(
-        ge=const.MIN_YEAR_BUILT,
-        le=const.MAX_YEAR_BUILT,
+
+    # year_built, floor, total_floors: float نه int
+    # دلیل: این ستون‌ها می‌توانند NaN داشته باشند. numpy int64 نمی‌تواند NaN
+    # داشته باشد. float64 می‌تواند و pandera بدون مشکل coerce می‌کند.
+    year_built: Series[float] = pa.Field(
+        ge=float(const.MIN_YEAR_BUILT),
+        le=float(const.MAX_YEAR_BUILT),
         nullable=True,
     )
-    floor: Series[int] = pa.Field(nullable=True)
-    total_floors: Series[int] = pa.Field(nullable=True)
+    floor: Series[float] = pa.Field(nullable=True)
+    total_floors: Series[float] = pa.Field(nullable=True)
 
     has_elevator: Series[bool] = pa.Field(nullable=True)
     has_parking: Series[bool] = pa.Field(nullable=True)
@@ -100,6 +111,8 @@ class HouseListing(BaseModel):
 
     area_m2: float = Field(ge=const.MIN_AREA_M2, le=const.MAX_AREA_M2)
     rooms: int = Field(ge=const.MIN_ROOMS, le=const.MAX_ROOMS)
+
+    # pydantic record-level کار می‌کند، NaN مفهوم ندارد -> int | None درست است
     year_built: int | None = Field(default=None, ge=const.MIN_YEAR_BUILT, le=const.MAX_YEAR_BUILT)
     floor: int | None = None
     total_floors: int | None = None
