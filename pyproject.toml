@@ -20,7 +20,15 @@ where = ["src"]
 "" = "src"
 
 # ----- ruff -----
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+
 [tool.ruff.lint.per-file-ignores]
+# sklearn convention: X is uppercase by design (feature matrix)
 "src/tehran_house_price/features/transformers.py" = ["N803"]
 "src/tehran_house_price/features/build_features.py" = ["N803"]
 "tests/unit/test_transformers.py" = ["N803", "N806"]
