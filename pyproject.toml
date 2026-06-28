@@ -37,6 +37,9 @@ select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
 "tests/unit/test_split.py" = ["N803", "N806"]
 "tests/unit/test_train.py" = ["N803", "N806"]
 "tests/unit/test_model_loader.py" = ["N803", "N806"]
+# fastapi convention: Depends() in argument defaults is the standard pattern
+"src/tehran_house_price/api/app.py" = ["B008"]
+"src/tehran_house_price/api/dependencies.py" = ["B008"]
 
 # ----- black -----
 [tool.black]

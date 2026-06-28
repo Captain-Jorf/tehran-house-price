@@ -1,5 +1,7 @@
 """API package for model serving."""
 
+from tehran_house_price.api.app import app, create_app
+from tehran_house_price.api.dependencies import get_loaded_model_service
 from tehran_house_price.api.model_loader import (
     ModelLoadError,
     ModelNotLoadedError,
@@ -27,5 +29,8 @@ __all__ = [
     "ModelService",
     "PredictionResult",
     "VersionResponse",
+    "app",
+    "create_app",
+    "get_loaded_model_service",
     "get_model_service",
 ]
