@@ -20,14 +20,11 @@ where = ["src"]
 "" = "src"
 
 # ----- ruff -----
-[tool.ruff]
-line-length = 100
-target-version = "py310"
-src = ["src", "tests"]
-
-[tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP", "N"]
-ignore = ["E501"]
+[tool.ruff.lint.per-file-ignores]
+"src/tehran_house_price/features/transformers.py" = ["N803"]
+"src/tehran_house_price/features/build_features.py" = ["N803"]
+"tests/unit/test_transformers.py" = ["N803", "N806"]
+"tests/unit/test_build_features.py" = ["N803", "N806"]
 
 # ----- black -----
 [tool.black]
