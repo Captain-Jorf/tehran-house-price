@@ -116,8 +116,6 @@ def _compute_basic_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
     mae = float(np.mean(np.abs(y_true - y_pred)))
     rmse = float(np.sqrt(np.mean((y_true - y_pred) ** 2)))
 
-    # MAPE: protect against zero targets (should not happen for price_per_m2,
-    # but defensive coding is cheap).
     safe_true = np.where(y_true == 0, np.nan, y_true)
     mape = float(np.nanmean(np.abs((y_true - y_pred) / safe_true)))
 
@@ -226,7 +224,8 @@ def run(
     return results
 
 
-def main() -> int:
+def _cli() -> int:
+    """CLI entry point. Kept separate from main() to avoid __main__ pickling issues."""
     parser = argparse.ArgumentParser(description="Train baseline models and report metrics.")
     parser.add_argument("--val-size", type=float, default=split_mod.DEFAULT_VAL_SIZE)
     parser.add_argument("--seed", type=int, default=split_mod.DEFAULT_SEED)
@@ -240,6 +239,24 @@ def main() -> int:
     except Exception as e:
         log.error("baseline run failed: %s", e)
         return 1
+
+
+def main() -> int:
+    """
+    Entry point for `python -m tehran_house_price.models.baseline`.
+
+    Important:
+        We re-import this module under its canonical name and call _cli()
+        from there. This guarantees that any objects pickled during the
+        run (the baselines) are stored under
+        'tehran_house_price.models.baseline.XXX' instead of '__main__.XXX',
+        which makes them loadable from any other process.
+    """
+    if __name__ == "__main__":
+        from tehran_house_price.models import baseline as _self
+
+        return _self._cli()
+    return _cli()
 
 
 if __name__ == "__main__":
