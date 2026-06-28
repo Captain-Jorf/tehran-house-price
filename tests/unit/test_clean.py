@@ -1,7 +1,6 @@
 """Tests for kaggle cleaning pipeline."""
 
 import pandas as pd
-
 from tehran_house_price.data import clean
 from tehran_house_price.data import constants as const
 

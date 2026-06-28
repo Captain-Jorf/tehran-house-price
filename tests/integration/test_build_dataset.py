@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
-
 from tehran_house_price.data import build_dataset
 
 

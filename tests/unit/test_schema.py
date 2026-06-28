@@ -6,7 +6,6 @@ import pandas as pd
 import pytest
 from pandera.errors import SchemaError
 from pydantic import ValidationError
-
 from tehran_house_price.data.schema import HouseListing, HouseListingSchema
 
 # ----- helpers -----
