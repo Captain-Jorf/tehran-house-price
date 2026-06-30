@@ -1,0 +1,78 @@
+# ===== Virtual environments =====
+thpenv/
+venv/
+.venv/
+env/
+
+# ===== Python cache =====
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ===== IDE & editors =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ===== Git =====
+.git/
+.gitignore
+.gitattributes
+
+# ===== Data (do NOT bake into image) =====
+data/raw/
+data/interim/
+data/processed/
+data/external/
+
+# ===== Logs =====
+logs/
+*.log
+
+# ===== Notebooks =====
+notebooks/
+*.ipynb
+.ipynb_checkpoints/
+
+# ===== Documentation (not needed at runtime) =====
+docs/
+
+# ===== Environment files (NEVER bake secrets into image) =====
+.env
+.env.example
+.env.*
+
+# ===== Docker files themselves =====
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# ===== OS files =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== Build artifacts =====
+build/
+dist/
+*.egg
+
+# ===== Test outputs (artifacts/data_validation, splits, model_evaluation) =====
+# We KEEP artifacts/models because the model is the production payload
+artifacts/data_validation/
+artifacts/splits/
+artifacts/model_evaluation/
+
+# ===== Scripts folder (currently empty) =====
+scripts/

@@ -1,0 +1,27 @@
+# Default to LF line endings for all text files in the repo.
+* text=auto eol=lf
+
+# Force LF for files that run in Linux containers.
+*.py text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+*.ini text eol=lf
+*.txt text eol=lf
+*.md text eol=lf
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Binary files: never touch.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.parquet binary
+*.joblib binary
+*.pkl binary
+*.zip binary
+*.gz binary
