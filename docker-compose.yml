@@ -1,0 +1,33 @@
+# docker-compose.yml
+# Local development orchestration for the Tehran House Price API.
+# Usage:
+#   docker compose up -d         start in background
+#   docker compose logs -f api   follow logs
+#   docker compose down          stop and remove
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tehran-house-price:latest
+    container_name: thp-api
+    ports:
+      - "8000:8000"
+    environment:
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      API_LOG_LEVEL: info
+      APP_ENV: prod
+      LOG_LEVEL: INFO
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request, sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8000/health', timeout=3).status == 200 else sys.exit(1)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

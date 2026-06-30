@@ -1,5 +1,7 @@
 """Tests for logger setup."""
 
+import contextlib
+
 from tehran_house_price.utils import logger as logger_mod
 from tehran_house_price.utils.logger import get_logger
 from tehran_house_price.utils.paths import logs_dir
@@ -18,10 +20,8 @@ def test_setup_logging_creates_log_file():
     log.info("trigger write")
     # flush handlers so the file actually gets touched
     for h in log.handlers + log.root.handlers:
-        try:
+        with contextlib.suppress(Exception):
             h.flush()
-        except Exception:
-            pass
     assert log_file.exists()
 
 
