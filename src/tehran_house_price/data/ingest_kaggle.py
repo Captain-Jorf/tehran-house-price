@@ -79,6 +79,7 @@ def _clean_target(target: Path) -> None:
 
 
 def download_dataset(force: bool = False) -> Path:
+    """Download the configured Kaggle dataset into the raw data directory."""
     cfg = get_config()
     dataset_ref = cfg["data"]["kaggle"]["dataset"]
     target = _target_dir()
@@ -114,23 +115,25 @@ def download_dataset(force: bool = False) -> Path:
     return target
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    """CLI entry point for downloading the Kaggle dataset."""
     parser = argparse.ArgumentParser(description="Download Tehran house price dataset from Kaggle.")
     parser.add_argument(
         "-f",
         "--force",
         action="store_true",
-        help="re-download even if files exist",
+        help="Redownload even if CSV files already exist.",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     try:
         target = download_dataset(force=args.force)
-        print(f"done. files are in: {target}")
-        return 0
     except Exception as e:
         log.error("ingestion failed: %s", e)
         return 1
+
+    print(f"done. files are in: {target}")
+    return 0
 
 
 if __name__ == "__main__":
