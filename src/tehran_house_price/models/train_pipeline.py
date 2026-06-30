@@ -25,12 +25,15 @@ from tehran_house_price.models import evaluation as ev
 from tehran_house_price.models import split as split_mod
 from tehran_house_price.models import train as train_mod
 from tehran_house_price.tracking import (
+    DEFAULT_REGISTERED_MODEL_NAME,
     get_run_context,
     is_tracking_enabled,
     log_artifact_file,
     log_metrics,
     log_params,
     log_sklearn_model,
+    promote_model,
+    register_model_from_run,
     set_tags,
     setup_mlflow,
 )
@@ -240,13 +243,13 @@ def _log_baseline_runs(baseline_results, *, seed, val_size):
 
 def _log_main_run(train_result, *, seed, val_size, xgb_params):
     if not is_tracking_enabled():
-        return
+        return None
 
     with get_run_context(
         run_name=train_result.model_name,
         extra_tags={"model_role": "main"},
         nested=True,
-    ):
+    ) as run:
         params = _common_model_params(
             model_name=train_result.model_name,
             algorithm="xgboost.XGBRegressor",
@@ -290,6 +293,8 @@ def _log_main_run(train_result, *, seed, val_size, xgb_params):
             log_sklearn_model(loaded, artifact_path="sklearn_model")
         except Exception as exc:
             log.warning("could not log sklearn model to mlflow | error=%s", exc)
+
+        return run.info.run_id if run is not None else None
 
 
 def _log_parent_summary(*, comparison_path, n_models_compared, baseline_count, main_trained):
@@ -363,12 +368,21 @@ def run(
             main_model_path = main_train_result.model_path
             main_metadata_path = main_train_result.metadata_path
             log.info("trained main model: %s", main_model_path)
-            _log_main_run(
+            main_run_id = _log_main_run(
                 main_train_result,
                 seed=seed,
                 val_size=val_size,
                 xgb_params=train_mod.DEFAULT_XGB_PARAMS,
             )
+            # auto-register the main model
+            if main_run_id:
+                version = register_model_from_run(
+                    run_id=main_run_id,
+                    artifact_subpath="sklearn_model",
+                    name=DEFAULT_REGISTERED_MODEL_NAME,
+                )
+                if version:
+                    promote_model(version=version, stage="Staging")
         else:
             log.info("skipping main model training")
 

@@ -1,11 +1,4 @@
-"""MLflow-based experiment tracking layer for Tehran House Price.
-
-This subpackage is intentionally additive: training and evaluation
-work with or without MLflow. Use ``setup_mlflow()`` once at the
-start of a run and ``get_run_context()`` to wrap a logical training
-run. The ``log_*`` helpers in :mod:`run_logger` are safe to call
-even when tracking is disabled.
-"""
+"""mlflow-based experiment tracking + registry layer."""
 
 from tehran_house_price.tracking.mlflow_setup import (
     DEFAULT_EXPERIMENT_NAME,
@@ -13,6 +6,13 @@ from tehran_house_price.tracking.mlflow_setup import (
     get_tracking_uri,
     is_tracking_enabled,
     setup_mlflow,
+)
+from tehran_house_price.tracking.registry import (
+    DEFAULT_REGISTERED_MODEL_NAME,
+    VALID_STAGES,
+    get_latest_version,
+    promote_model,
+    register_model_from_run,
 )
 from tehran_house_price.tracking.run_logger import (
     log_artifact_file,
@@ -24,6 +24,9 @@ from tehran_house_price.tracking.run_logger import (
 
 __all__ = [
     "DEFAULT_EXPERIMENT_NAME",
+    "DEFAULT_REGISTERED_MODEL_NAME",
+    "VALID_STAGES",
+    "get_latest_version",
     "get_run_context",
     "get_tracking_uri",
     "is_tracking_enabled",
@@ -31,6 +34,8 @@ __all__ = [
     "log_metrics",
     "log_params",
     "log_sklearn_model",
+    "promote_model",
+    "register_model_from_run",
     "set_tags",
     "setup_mlflow",
 ]
