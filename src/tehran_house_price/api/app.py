@@ -15,6 +15,7 @@ from fastapi import Depends, FastAPI
 
 from tehran_house_price import __version__
 from tehran_house_price.api.dependencies import get_loaded_model_service
+from tehran_house_price.api.errors import register_exception_handlers
 from tehran_house_price.api.model_loader import (
     ModelLoadError,
     ModelService,
@@ -75,6 +76,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    register_exception_handlers(app)
     _register_routes(app)
     return app
 

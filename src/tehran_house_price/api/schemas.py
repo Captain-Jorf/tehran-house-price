@@ -238,3 +238,53 @@ class VersionResponse(BaseModel):
         default=None,
         description="Filesystem path to the loaded model artifact, if available.",
     )
+
+
+class ErrorDetail(BaseModel):
+    """Single error item, used for field-level validation failures."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        protected_namespaces=(),
+    )
+
+    field: str | None = Field(
+        default=None,
+        description="Dotted path of the offending field, if applicable.",
+    )
+    message: str = Field(
+        ...,
+        description="Human-readable error message.",
+    )
+    type: str | None = Field(
+        default=None,
+        description="Machine-readable error type code.",
+    )
+
+
+class ErrorResponse(BaseModel):
+    """Structured error response returned by all error handlers."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        protected_namespaces=(),
+    )
+
+    error: str = Field(
+        ...,
+        description="Short error category, e.g. validation_error, model_error.",
+    )
+    message: str = Field(
+        ...,
+        description="Human-readable description of the problem.",
+    )
+    details: list[ErrorDetail] = Field(
+        default_factory=list,
+        description="Optional list of per-field or per-item error details.",
+    )
+    status_code: int = Field(
+        ...,
+        ge=400,
+        le=599,
+        description="HTTP status code mirrored from the response.",
+    )

@@ -49,12 +49,7 @@ class _StubModelService:
 
 
 def _build_app_with_stub(stub: _StubModelService) -> FastAPI:
-    """Create a FastAPI app with the base model service replaced by a stub.
-
-    We only override get_model_service. The higher-level dependency
-    get_loaded_model_service depends on get_model_service, so it will
-    automatically pick up the stub and still run its own is_loaded check.
-    """
+    """Create a FastAPI app with the base model service replaced by a stub."""
     app = create_app()
     app.dependency_overrides[get_model_service] = lambda: stub
     return app
@@ -141,6 +136,10 @@ def test_predict_rejects_invalid_payload(loaded_client: TestClient) -> None:
     response = loaded_client.post("/predict", json=bad_payload)
 
     assert response.status_code == 422
+    body = response.json()
+    assert body["error"] == "validation_error"
+    assert body["status_code"] == 422
+    assert len(body["details"]) >= 1
 
 
 def test_predict_rejects_extra_fields(
@@ -152,6 +151,8 @@ def test_predict_rejects_extra_fields(
     response = loaded_client.post("/predict", json=valid_payload)
 
     assert response.status_code == 422
+    body = response.json()
+    assert body["error"] == "validation_error"
 
 
 def test_predict_returns_503_when_model_not_loaded(
@@ -161,7 +162,10 @@ def test_predict_returns_503_when_model_not_loaded(
     response = unloaded_client.post("/predict", json=valid_payload)
 
     assert response.status_code == 503
-    assert response.json()["detail"] == "Model is not loaded"
+    body = response.json()
+    assert body["error"] == "http_error"
+    assert body["message"] == "Model is not loaded"
+    assert body["status_code"] == 503
 
 
 def test_predict_batch_returns_predictions(
@@ -190,6 +194,8 @@ def test_predict_batch_rejects_empty_listings(loaded_client: TestClient) -> None
     response = loaded_client.post("/predict/batch", json={"listings": []})
 
     assert response.status_code == 422
+    body = response.json()
+    assert body["error"] == "validation_error"
 
 
 def test_predict_batch_returns_503_when_model_not_loaded(
@@ -202,6 +208,8 @@ def test_predict_batch_returns_503_when_model_not_loaded(
     )
 
     assert response.status_code == 503
+    body = response.json()
+    assert body["error"] == "http_error"
 
 
 def test_lifespan_loads_real_model_if_available() -> None:
@@ -215,7 +223,6 @@ def test_lifespan_loads_real_model_if_available() -> None:
     if not real_path.exists():
         pytest.skip("real model artifact not available")
 
-    # Make sure the singleton starts clean so the lifespan actually loads.
     get_model_service().reset()
 
     app = create_app()
@@ -242,5 +249,4 @@ def test_lifespan_loads_real_model_if_available() -> None:
         assert body["predicted_price_per_m2"] > 0
         assert body["predicted_total_price"] > 0
 
-    # Reset for any test that might run after.
     get_model_service().reset()
