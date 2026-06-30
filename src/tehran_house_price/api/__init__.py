@@ -2,15 +2,19 @@
 
 from tehran_house_price.api.app import app, create_app
 from tehran_house_price.api.dependencies import get_loaded_model_service
+from tehran_house_price.api.errors import register_exception_handlers
 from tehran_house_price.api.model_loader import (
     ModelLoadError,
     ModelNotLoadedError,
     ModelService,
     get_model_service,
 )
+from tehran_house_price.api.run import main as run_server
 from tehran_house_price.api.schemas import (
     BatchPredictionRequest,
     BatchPredictionResponse,
+    ErrorDetail,
+    ErrorResponse,
     HealthResponse,
     HousePredictionRequest,
     HousePredictionResponse,
@@ -21,6 +25,8 @@ from tehran_house_price.api.schemas import (
 __all__ = [
     "BatchPredictionRequest",
     "BatchPredictionResponse",
+    "ErrorDetail",
+    "ErrorResponse",
     "HealthResponse",
     "HousePredictionRequest",
     "HousePredictionResponse",
@@ -33,4 +39,6 @@ __all__ = [
     "create_app",
     "get_loaded_model_service",
     "get_model_service",
+    "register_exception_handlers",
+    "run_server",
 ]
