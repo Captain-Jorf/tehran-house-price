@@ -1,15 +1,10 @@
 """
-Train pipeline orchestrator.
+train pipeline orchestrator + mlflow tracking.
 
-Glues together the Phase 2 training steps:
+parent run = train_pipeline
+child runs = each baseline + main model
 
-  1. (optional) train baseline models
-  2. train the main XGBoost model
-  3. build a comparison report across all trained models
-  4. return a structured TrainPipelineResult
-
-This file is the training counterpart of build_dataset.py from Phase 1.
-It exists so a single command reproduces the entire model pipeline.
+tracking is fully toggleable via MLFLOW_TRACKING_ENABLED.
 """
 
 from __future__ import annotations
@@ -29,18 +24,27 @@ from tehran_house_price.models import baseline as baseline_mod
 from tehran_house_price.models import evaluation as ev
 from tehran_house_price.models import split as split_mod
 from tehran_house_price.models import train as train_mod
+from tehran_house_price.tracking import (
+    get_run_context,
+    is_tracking_enabled,
+    log_artifact_file,
+    log_metrics,
+    log_params,
+    log_sklearn_model,
+    set_tags,
+    setup_mlflow,
+)
 from tehran_house_price.utils.logger import get_logger
 from tehran_house_price.utils.paths import artifacts_dir, ensure_dir, processed_dir
 
 log = get_logger(__name__)
 
 DEFAULT_COMPARISON_FILENAME: str = "train_pipeline_comparison.json"
+MLFLOW_EXPERIMENT_NAME: str = "tehran_house_price"
 
 
 @dataclass(frozen=True, slots=True)
 class TrainPipelineResult:
-    """Outputs from a full training pipeline run."""
-
     main_model_path: Path | None
     main_metadata_path: Path | None
     baseline_paths: list[Path] = field(default_factory=list)
@@ -48,13 +52,76 @@ class TrainPipelineResult:
     n_models_compared: int = 0
 
 
+# mlflow helpers (orchestration-only)
+
+
+def _split_params(*, seed, val_size, n_train, n_val):
+    return {
+        "split.seed": seed,
+        "split.val_size": val_size,
+        "split.n_train": n_train,
+        "split.n_val": n_val,
+    }
+
+
+def _common_model_params(*, model_name, algorithm, role, target_col, target_transform):
+    return {
+        "model_name": model_name,
+        "algorithm": algorithm,
+        "model_role": role,
+        "target_col": target_col,
+        "target_transform": target_transform,
+    }
+
+
+def _read_split_hashes_for(metadata_path: Path | None) -> dict[str, str]:
+    if metadata_path is None or not metadata_path.exists():
+        return {}
+    try:
+        payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+    split_info = payload.get("split") or {}
+    out: dict[str, str] = {}
+    if split_info.get("train_ids_hash"):
+        out["split.train_ids_hash"] = str(split_info["train_ids_hash"])
+    if split_info.get("val_ids_hash"):
+        out["split.val_ids_hash"] = str(split_info["val_ids_hash"])
+    return out
+
+
+def _evaluation_json_path_for(model_stem: str) -> Path:
+    return artifacts_dir() / "model_evaluation" / f"{model_stem}_evaluation.json"
+
+
+def _baseline_metrics_json_path_for(model_stem: str) -> Path:
+    return artifacts_dir() / "model_evaluation" / f"{model_stem}_metrics.json"
+
+
+def _worst_district_metrics(per_district: pd.DataFrame, top_k: int = 5) -> dict[str, float]:
+    if per_district is None or per_district.empty:
+        return {}
+
+    head = per_district.head(top_k)
+    out: dict[str, float] = {}
+    for rank, (_, row) in enumerate(head.iterrows(), start=1):
+        for metric in ("mae", "mape"):
+            value = row.get(metric)
+            if value is None:
+                continue
+            try:
+                out[f"worst_district_{rank}_{metric}"] = float(value)
+            except (TypeError, ValueError):
+                continue
+    return out
+
+
+# comparison
+
+
 def _load_persisted_models_for_comparison() -> list[ev.EvaluationReport]:
-    """
-    Load every trained model from artifacts/models/ and evaluate it on
-    the canonical validation split. This guarantees apples-to-apples
-    comparison even if some models were trained in earlier sessions.
-    """
-    # Required so joblib can resolve our custom estimator classes at unpickle time.
+    # need these imports so joblib can resolve our custom classes
     from tehran_house_price.models import baseline as _baseline  # noqa: F401
     from tehran_house_price.models import train as _train  # noqa: F401
 
@@ -103,7 +170,6 @@ def _load_persisted_models_for_comparison() -> list[ev.EvaluationReport]:
 
 
 def _save_comparison(reports: list[ev.EvaluationReport]) -> Path | None:
-    """Persist a comparison JSON across all models. Returns the path or None."""
     if not reports:
         log.warning("no reports to compare; skipping comparison save")
         return None
@@ -126,6 +192,125 @@ def _save_comparison(reports: list[ev.EvaluationReport]) -> Path | None:
     return out_path
 
 
+# per-model run loggers
+
+
+def _log_baseline_runs(baseline_results, *, seed, val_size):
+    if not is_tracking_enabled() or not baseline_results:
+        return
+
+    for result in baseline_results:
+        algorithm = (
+            "MeanPriceBaseline" if result.name == "baseline_mean" else "DistrictMedianBaseline"
+        )
+        with get_run_context(
+            run_name=result.name,
+            extra_tags={"model_role": "baseline"},
+            nested=True,
+        ):
+            params = _common_model_params(
+                model_name=result.name,
+                algorithm=algorithm,
+                role="baseline",
+                target_col=train_mod.DEFAULT_TARGET_COL,
+                target_transform="none",
+            )
+            params.update(
+                _split_params(
+                    seed=seed,
+                    val_size=val_size,
+                    n_train=result.n_train,
+                    n_val=result.n_val,
+                )
+            )
+            log_params(params)
+
+            metrics_path = _baseline_metrics_json_path_for(result.name)
+            if metrics_path.exists():
+                try:
+                    payload = json.loads(metrics_path.read_text(encoding="utf-8"))
+                except Exception:
+                    payload = {}
+                metrics = {key: payload[key] for key in ("mae", "rmse", "mape") if key in payload}
+                log_metrics(metrics)
+                log_artifact_file(metrics_path, artifact_subdir="evaluation")
+
+            log_artifact_file(result.model_path, artifact_subdir="model")
+
+
+def _log_main_run(train_result, *, seed, val_size, xgb_params):
+    if not is_tracking_enabled():
+        return
+
+    with get_run_context(
+        run_name=train_result.model_name,
+        extra_tags={"model_role": "main"},
+        nested=True,
+    ):
+        params = _common_model_params(
+            model_name=train_result.model_name,
+            algorithm="xgboost.XGBRegressor",
+            role="main",
+            target_col=train_mod.DEFAULT_TARGET_COL,
+            target_transform="log1p / expm1",
+        )
+        params.update(
+            _split_params(
+                seed=seed,
+                val_size=val_size,
+                n_train=train_result.n_train,
+                n_val=train_result.n_val,
+            )
+        )
+        params.update(_read_split_hashes_for(train_result.metadata_path))
+        params.update({f"hp.{key}": value for key, value in xgb_params.items()})
+
+        log_params(params)
+        log_metrics(train_result.metrics)
+
+        eval_json = _evaluation_json_path_for(train_result.model_name)
+        if eval_json.exists():
+            try:
+                payload = json.loads(eval_json.read_text(encoding="utf-8"))
+            except Exception:
+                payload = {}
+            per_district_rows = payload.get("per_district") or []
+            if per_district_rows:
+                per_district_df = pd.DataFrame(per_district_rows).set_index("district")
+                worst_metrics = _worst_district_metrics(per_district_df)
+                if worst_metrics:
+                    log_metrics(worst_metrics)
+            log_artifact_file(eval_json, artifact_subdir="evaluation")
+
+        log_artifact_file(train_result.metadata_path, artifact_subdir="model")
+        log_artifact_file(train_result.model_path, artifact_subdir="model")
+
+        try:
+            loaded = joblib.load(train_result.model_path)
+            log_sklearn_model(loaded, artifact_path="sklearn_model")
+        except Exception as exc:
+            log.warning("could not log sklearn model to mlflow | error=%s", exc)
+
+
+def _log_parent_summary(*, comparison_path, n_models_compared, baseline_count, main_trained):
+    if not is_tracking_enabled():
+        return
+
+    log_metrics(
+        {
+            "pipeline.n_models_compared": float(n_models_compared),
+            "pipeline.n_baselines": float(baseline_count),
+            "pipeline.main_trained": 1.0 if main_trained else 0.0,
+        }
+    )
+
+    if comparison_path is not None and comparison_path.exists():
+        log_artifact_file(comparison_path, artifact_subdir="comparison")
+
+
+# public api
+
+
 def run(
     *,
     skip_baselines: bool = False,
@@ -134,22 +319,6 @@ def run(
     seed: int = split_mod.DEFAULT_SEED,
     model_name: str = train_mod.DEFAULT_MODEL_NAME,
 ) -> TrainPipelineResult:
-    """
-    Run the full Phase 2 training pipeline.
-
-    Args:
-        skip_baselines: do not retrain baselines if they already exist.
-        skip_main: do not train the main XGBoost model (useful for debugging).
-        val_size: validation fraction.
-        seed: split seed.
-        model_name: filename stem for the main model artifact.
-
-    Returns:
-        TrainPipelineResult with paths and number of compared models.
-
-    Raises:
-        ValueError: if both skip flags are True.
-    """
     if skip_baselines and skip_main:
         raise ValueError("cannot skip both baselines and main model; nothing to do")
 
@@ -161,30 +330,57 @@ def run(
         val_size,
     )
 
-    baseline_paths: list[Path] = []
-    if not skip_baselines:
-        baseline_results = baseline_mod.run(val_size=val_size, seed=seed)
-        baseline_paths = [r.model_path for r in baseline_results]
-        log.info("trained %d baseline model(s)", len(baseline_paths))
-    else:
-        log.info("skipping baseline training")
+    setup_mlflow(MLFLOW_EXPERIMENT_NAME)
 
-    main_model_path: Path | None = None
-    main_metadata_path: Path | None = None
-    if not skip_main:
-        train_result = train_mod.train(
-            val_size=val_size,
-            seed=seed,
-            model_name=model_name,
+    parent_tags = {
+        "pipeline": "train_pipeline",
+        "skip_baselines": str(skip_baselines).lower(),
+        "skip_main": str(skip_main).lower(),
+    }
+
+    with get_run_context(run_name="train_pipeline", extra_tags=parent_tags):
+        set_tags({"pipeline_seed": str(seed), "pipeline_val_size": str(val_size)})
+
+        baseline_paths: list[Path] = []
+        baseline_results: list[baseline_mod.BaselineTrainResult] = []
+        if not skip_baselines:
+            baseline_results = baseline_mod.run(val_size=val_size, seed=seed)
+            baseline_paths = [r.model_path for r in baseline_results]
+            log.info("trained %d baseline model(s)", len(baseline_paths))
+            _log_baseline_runs(baseline_results, seed=seed, val_size=val_size)
+        else:
+            log.info("skipping baseline training")
+
+        main_model_path: Path | None = None
+        main_metadata_path: Path | None = None
+        main_train_result: train_mod.TrainResult | None = None
+        if not skip_main:
+            main_train_result = train_mod.train(
+                val_size=val_size,
+                seed=seed,
+                model_name=model_name,
+            )
+            main_model_path = main_train_result.model_path
+            main_metadata_path = main_train_result.metadata_path
+            log.info("trained main model: %s", main_model_path)
+            _log_main_run(
+                main_train_result,
+                seed=seed,
+                val_size=val_size,
+                xgb_params=train_mod.DEFAULT_XGB_PARAMS,
+            )
+        else:
+            log.info("skipping main model training")
+
+        reports = _load_persisted_models_for_comparison()
+        comparison_path = _save_comparison(reports)
+
+        _log_parent_summary(
+            comparison_path=comparison_path,
+            n_models_compared=len(reports),
+            baseline_count=len(baseline_paths),
+            main_trained=main_train_result is not None,
         )
-        main_model_path = train_result.model_path
-        main_metadata_path = train_result.metadata_path
-        log.info("trained main model: %s", main_model_path)
-    else:
-        log.info("skipping main model training")
-
-    reports = _load_persisted_models_for_comparison()
-    comparison_path = _save_comparison(reports)
 
     return TrainPipelineResult(
         main_model_path=main_model_path,
@@ -196,7 +392,6 @@ def run(
 
 
 def _cli() -> int:
-    """CLI entry point; kept separate from main() to avoid __main__ pickling issues."""
     parser = argparse.ArgumentParser(
         description="Run the full Phase 2 training pipeline: baselines + main model + comparison."
     )
@@ -238,13 +433,6 @@ def _cli() -> int:
 
 
 def main() -> int:
-    """
-    Entry point for `python -m tehran_house_price.models.train_pipeline`.
-
-    Re-imports this module under its canonical name so any pickled objects
-    produced downstream reference the canonical module path. Same pattern
-    as baseline.main() and train.main().
-    """
     if __name__ == "__main__":
         from tehran_house_price.models import train_pipeline as _self
 

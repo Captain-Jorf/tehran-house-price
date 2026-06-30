@@ -1,13 +1,4 @@
-"""MLflow setup and run context helpers.
-
-Design goals:
-- Local file-based tracking by default (no server required).
-- Tracking is optional via the ``MLFLOW_TRACKING_ENABLED`` env var,
-  so training pipelines remain runnable in environments where
-  MLflow is undesirable (CI smoke runs, quick local iteration).
-- Standard tags (git commit, package version, environment) are
-  attached automatically to every run for reproducibility.
-"""
+"""mlflow setup + run context."""
 
 from __future__ import annotations
 
@@ -30,20 +21,11 @@ _TRUE_VALUES = {"1", "true", "yes", "on"}
 
 
 def is_tracking_enabled() -> bool:
-    """Return True when MLflow tracking is enabled via env var.
-
-    Defaults to True so that local runs are tracked by default.
-    """
     raw = os.getenv("MLFLOW_TRACKING_ENABLED", "true")
     return raw.strip().lower() in _TRUE_VALUES
 
 
 def get_tracking_uri() -> str:
-    """Return the MLflow tracking URI to use.
-
-    If ``MLFLOW_TRACKING_URI`` is set, it is honored as-is.
-    Otherwise, fall back to a local file store under ``<project_root>/mlruns``.
-    """
     custom = os.getenv("MLFLOW_TRACKING_URI")
     if custom:
         return custom
@@ -54,7 +36,6 @@ def get_tracking_uri() -> str:
 
 
 def _git_commit_sha() -> str:
-    """Return the short git commit SHA, or 'unknown' if not available."""
     try:
         result = subprocess.run(
             ["git", "rev-parse", "HEAD"],
@@ -69,10 +50,6 @@ def _git_commit_sha() -> str:
 
 
 def setup_mlflow(experiment_name: str = DEFAULT_EXPERIMENT_NAME) -> str | None:
-    """Configure the tracking URI and ensure the experiment exists.
-
-    Returns the experiment id, or None if tracking is disabled.
-    """
     if not is_tracking_enabled():
         log.info("mlflow tracking disabled; skipping setup")
         return None
@@ -114,13 +91,9 @@ def _default_tags() -> dict[str, str]:
 def get_run_context(
     run_name: str,
     extra_tags: dict[str, str] | None = None,
+    nested: bool = False,
 ) -> Iterator[mlflow.ActiveRun | None]:
-    """Start an MLflow run with standard tags.
-
-    Yields the active run object, or None when tracking is disabled.
-    Disabling tracking allows callers to use the same ``with`` block
-    unconditionally.
-    """
+    """start an mlflow run. pass nested=True for child runs."""
     if not is_tracking_enabled():
         log.info("mlflow tracking disabled; yielding no-op run | name=%s", run_name)
         yield None
@@ -130,11 +103,12 @@ def get_run_context(
     if extra_tags:
         tags.update(extra_tags)
 
-    with mlflow.start_run(run_name=run_name, tags=tags) as run:
+    with mlflow.start_run(run_name=run_name, tags=tags, nested=nested) as run:
         log.info(
-            "mlflow run started | name=%s | run_id=%s",
+            "mlflow run started | name=%s | run_id=%s | nested=%s",
             run_name,
             run.info.run_id,
+            nested,
         )
         try:
             yield run
