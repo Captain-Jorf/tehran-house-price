@@ -1,0 +1,63 @@
+# Render.com deployment configuration.
+#
+# This file is Infrastructure-as-Code for the production deployment of the
+# Tehran House Price API. Render reads this file automatically when the
+# repository is connected. Any change here is deployed on the next push.
+#
+# Notes:
+# - The Docker image is built from Dockerfile.prod (uses standard mirrors,
+#   which work on Render's US/EU infrastructure).
+# - Model artifacts are NOT baked into the image. They are downloaded on
+#   startup from GitHub Releases via the bootstrap module.
+# - Secret env vars (ARTIFACT_DOWNLOAD_URL, etc.) are set via the Render
+#   dashboard, not here, to keep this file safe to commit.
+
+services:
+  - type: web
+    name: tehran-house-price-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.prod
+    dockerContext: .
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+
+    healthCheckPath: /health
+
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: LOG_LEVEL
+        value: INFO
+      - key: API_HOST
+        value: 0.0.0.0
+      - key: API_PORT
+        value: "8000"
+      - key: API_LOG_LEVEL
+        value: info
+
+      # Observability: safe defaults for production
+      - key: OBSERVABILITY_ENABLED
+        value: "true"
+      - key: REQUEST_LOGGING_ENABLED
+        value: "true"
+      - key: PROMETHEUS_ENABLED
+        value: "true"
+      - key: DEEP_HEALTHCHECK_ENABLED
+        value: "true"
+
+      # Prediction logging is off by default (no database in free tier)
+      - key: PREDICTION_LOGGING_ENABLED
+        value: "false"
+
+      # MLflow tracking off in production
+      - key: MLFLOW_TRACKING_ENABLED
+        value: "false"
+
+      # Artifact download URLs: set these in the Render dashboard, not here.
+      # They are declared so Render prompts for their values on first deploy.
+      - key: ARTIFACT_DOWNLOAD_URL
+        sync: false
+      - key: ARTIFACT_METADATA_DOWNLOAD_URL
+        sync: false
