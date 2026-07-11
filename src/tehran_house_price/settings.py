@@ -52,6 +52,12 @@ class AppSettings(BaseSettings):
     prediction_logging_enabled: bool = Field(default=False)
     prediction_log_db_url: str | None = Field(default=None)
 
+    # deployment: artifact download URLs
+    # If unset, ensure_model_artifacts() is a no-op and the app relies on
+    # local files (dev or docker compose volume mount).
+    artifact_download_url: str | None = Field(default=None)
+    artifact_metadata_download_url: str | None = Field(default=None)
+
 
 def load_yaml_config(path: Path | None = None) -> dict[str, Any]:
     """Load configs/base.yaml as a plain dict."""

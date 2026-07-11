@@ -14,6 +14,10 @@ from contextlib import asynccontextmanager
 from fastapi import BackgroundTasks, Depends, FastAPI, Request
 
 from tehran_house_price import __version__
+from tehran_house_price.api.bootstrap import (
+    ArtifactDownloadError,
+    ensure_model_artifacts,
+)
 from tehran_house_price.api.dependencies import get_loaded_model_service
 from tehran_house_price.api.errors import register_exception_handlers
 from tehran_house_price.api.health import register_health_routes
@@ -52,9 +56,16 @@ API_DESCRIPTION = (
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Application lifespan handler.
 
-    On startup, eagerly load the model so the first request is fast.
-    On shutdown, release the model from memory.
+    On startup: ensure model artifacts exist on disk (download if needed),
+    then eagerly load the model so the first request is fast.
+    On shutdown: release the model from memory.
     """
+    logger.info("starting application | ensuring model artifacts")
+    try:
+        ensure_model_artifacts()
+    except ArtifactDownloadError as exc:
+        logger.error("artifact bootstrap failed: %s", exc)
+
     logger.info("starting application | loading model")
     service = get_model_service()
     try:
