@@ -1,3 +1,8 @@
+# Pre-commit hooks configuration.
+# Tool versions here MUST match the versions in requirements-dev.txt
+# and the versions used in .github/workflows/ci.yml.
+# This is our single source of truth for local + CI parity.
+
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.5.0
