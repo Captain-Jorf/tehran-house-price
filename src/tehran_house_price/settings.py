@@ -40,6 +40,14 @@ class AppSettings(BaseSettings):
     kaggle_key: str | None = None
     kaggle_api_token: str | None = None
 
+    # observability
+    observability_enabled: bool = Field(default=True)
+    request_logging_enabled: bool = Field(default=True)
+    prometheus_enabled: bool = Field(default=True)
+    deep_healthcheck_enabled: bool = Field(default=True)
+    request_id_header_name: str = Field(default="X-Request-ID")
+    health_min_disk_free_bytes: int = Field(default=100_000_000)
+
 
 def load_yaml_config(path: Path | None = None) -> dict[str, Any]:
     """Load configs/base.yaml as a plain dict."""
@@ -52,7 +60,7 @@ def load_yaml_config(path: Path | None = None) -> dict[str, Any]:
 
 @lru_cache(maxsize=1)
 def get_settings() -> AppSettings:
-    """Cached settings instance."""
+    """Return cached environment settings."""
     return AppSettings()
 
 

@@ -28,7 +28,6 @@ target-version = "py310"
 select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
 
 [tool.ruff.lint.per-file-ignores]
-# sklearn convention: X is uppercase by design (feature matrix)
 "src/tehran_house_price/features/*.py" = ["N803"]
 "src/tehran_house_price/models/*.py" = ["N803", "N806"]
 "tests/unit/test_transformers.py" = ["N803", "N806"]
@@ -37,9 +36,9 @@ select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
 "tests/unit/test_split.py" = ["N803", "N806"]
 "tests/unit/test_train.py" = ["N803", "N806"]
 "tests/unit/test_model_loader.py" = ["N803", "N806"]
-# fastapi convention: Depends() in argument defaults is the standard pattern
 "src/tehran_house_price/api/app.py" = ["B008"]
 "src/tehran_house_price/api/dependencies.py" = ["B008"]
+"src/tehran_house_price/api/health.py" = ["B008"]
 
 # ----- black -----
 [tool.black]

@@ -16,6 +16,9 @@ from fastapi import Depends, FastAPI
 from tehran_house_price import __version__
 from tehran_house_price.api.dependencies import get_loaded_model_service
 from tehran_house_price.api.errors import register_exception_handlers
+from tehran_house_price.api.health import register_health_routes
+from tehran_house_price.api.metrics import record_prediction, register_metrics_routes
+from tehran_house_price.api.middleware import register_request_middleware
 from tehran_house_price.api.model_loader import (
     ModelLoadError,
     ModelService,
@@ -32,6 +35,7 @@ from tehran_house_price.api.schemas import (
     PredictionResult,
     VersionResponse,
 )
+from tehran_house_price.settings import get_settings
 from tehran_house_price.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -69,6 +73,8 @@ def create_app() -> FastAPI:
     Using a factory makes it trivial to spin up isolated app instances
     in tests without polluting module-level state.
     """
+    settings = get_settings()
+
     app = FastAPI(
         title=API_TITLE,
         description=API_DESCRIPTION,
@@ -77,6 +83,14 @@ def create_app() -> FastAPI:
     )
 
     register_exception_handlers(app)
+    register_request_middleware(app)
+
+    if settings.deep_healthcheck_enabled:
+        register_health_routes(app)
+
+    if settings.prometheus_enabled:
+        register_metrics_routes(app)
+
     _register_routes(app)
     return app
 
@@ -88,7 +102,7 @@ def _register_routes(app: FastAPI) -> None:
         "/health",
         response_model=HealthResponse,
         tags=["system"],
-        summary="Liveness and model-loaded probe",
+        summary="Basic health probe and model-loaded status",
     )
     def health(
         service: ModelService = Depends(get_model_service),
@@ -127,12 +141,24 @@ def _register_routes(app: FastAPI) -> None:
         price_per_m2 = float(predictions[0])
         total_price = price_per_m2 * payload.area_m2
 
+        record_prediction(
+            endpoint="/predict",
+            model_name=DEFAULT_MODEL_NAME,
+            count=1,
+        )
+
         return HousePredictionResponse(
             predicted_price_per_m2=price_per_m2,
             predicted_total_price=total_price,
             model_name=DEFAULT_MODEL_NAME,
         )
 
+    @app.post(
+        "/predict/batch",
+        response_model=BatchPredictionResponse,
+        tags=["inference"],
+        summary="Predict prices for a batch of house listings",
+    )
     @app.post(
         "/predict/batch",
         response_model=BatchPredictionResponse,
@@ -156,6 +182,12 @@ def _register_routes(app: FastAPI) -> None:
                     predicted_total_price=total_price,
                 )
             )
+
+        record_prediction(
+            endpoint="/predict/batch",
+            model_name=DEFAULT_MODEL_NAME,
+            count=len(results),
+        )
 
         return BatchPredictionResponse(
             predictions=results,
