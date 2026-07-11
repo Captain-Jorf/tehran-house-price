@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: thp-api-obs
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./artifacts/models:/app/artifacts/models:ro
+    environment:
+      - APP_ENV=dev
+      - LOG_LEVEL=INFO
+      - OBSERVABILITY_ENABLED=true
+      - PROMETHEUS_ENABLED=true
+      - REQUEST_LOGGING_ENABLED=true
+      - DEEP_HEALTHCHECK_ENABLED=true
+      - PREDICTION_LOGGING_ENABLED=true
+      - PREDICTION_LOG_DB_URL=postgresql://postgres:postgres@postgres:5432/thp_predictions
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: thp-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=thp_predictions
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d thp_predictions"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: thp-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+
+  grafana:
+    image: grafana/grafana:10.0.3
+    container_name: thp-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    depends_on:
+      - prometheus

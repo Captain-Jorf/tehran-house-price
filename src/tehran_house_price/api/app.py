@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI
+from fastapi import BackgroundTasks, Depends, FastAPI, Request
 
 from tehran_house_price import __version__
 from tehran_house_price.api.dependencies import get_loaded_model_service
@@ -35,6 +35,7 @@ from tehran_house_price.api.schemas import (
     PredictionResult,
     VersionResponse,
 )
+from tehran_house_price.monitoring.prediction_logger import log_prediction
 from tehran_house_price.settings import get_settings
 from tehran_house_price.utils.logger import get_logger
 
@@ -68,11 +69,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 def create_app() -> FastAPI:
-    """Create and configure the FastAPI application instance.
-
-    Using a factory makes it trivial to spin up isolated app instances
-    in tests without polluting module-level state.
-    """
+    """Create and configure the FastAPI application instance."""
     settings = get_settings()
 
     app = FastAPI(
@@ -135,6 +132,8 @@ def _register_routes(app: FastAPI) -> None:
     )
     def predict(
         payload: HousePredictionRequest,
+        request: Request,
+        background_tasks: BackgroundTasks,
         service: ModelService = Depends(get_loaded_model_service),
     ) -> HousePredictionResponse:
         predictions = service.predict([payload.to_model_input()])
@@ -145,6 +144,18 @@ def _register_routes(app: FastAPI) -> None:
             endpoint="/predict",
             model_name=DEFAULT_MODEL_NAME,
             count=1,
+        )
+
+        background_tasks.add_task(
+            log_prediction,
+            request_id=getattr(request.state, "request_id", "unknown"),
+            endpoint="/predict",
+            model_name=DEFAULT_MODEL_NAME,
+            input_data=payload.model_dump(),
+            output_data={
+                "predicted_price_per_m2": price_per_m2,
+                "predicted_total_price": total_price,
+            },
         )
 
         return HousePredictionResponse(
@@ -159,14 +170,10 @@ def _register_routes(app: FastAPI) -> None:
         tags=["inference"],
         summary="Predict prices for a batch of house listings",
     )
-    @app.post(
-        "/predict/batch",
-        response_model=BatchPredictionResponse,
-        tags=["inference"],
-        summary="Predict prices for a batch of house listings",
-    )
     def predict_batch(
         payload: BatchPredictionRequest,
+        request: Request,
+        background_tasks: BackgroundTasks,
         service: ModelService = Depends(get_loaded_model_service),
     ) -> BatchPredictionResponse:
         rows = payload.to_model_inputs()
@@ -187,6 +194,15 @@ def _register_routes(app: FastAPI) -> None:
             endpoint="/predict/batch",
             model_name=DEFAULT_MODEL_NAME,
             count=len(results),
+        )
+
+        background_tasks.add_task(
+            log_prediction,
+            request_id=getattr(request.state, "request_id", "unknown"),
+            endpoint="/predict/batch",
+            model_name=DEFAULT_MODEL_NAME,
+            input_data=payload.model_dump(),
+            output_data={"predictions": [r.model_dump() for r in results]},
         )
 
         return BatchPredictionResponse(

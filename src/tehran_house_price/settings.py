@@ -35,7 +35,7 @@ class AppSettings(BaseSettings):
     app_env: str = Field(default="dev")
     log_level: str = Field(default="INFO")
 
-    # kaggle (both old and new auth styles supported)
+    # kaggle
     kaggle_username: str | None = None
     kaggle_key: str | None = None
     kaggle_api_token: str | None = None
@@ -47,6 +47,10 @@ class AppSettings(BaseSettings):
     deep_healthcheck_enabled: bool = Field(default=True)
     request_id_header_name: str = Field(default="X-Request-ID")
     health_min_disk_free_bytes: int = Field(default=100_000_000)
+
+    # prediction logging
+    prediction_logging_enabled: bool = Field(default=False)
+    prediction_log_db_url: str | None = Field(default=None)
 
 
 def load_yaml_config(path: Path | None = None) -> dict[str, Any]:
