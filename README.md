@@ -13,6 +13,10 @@ Iran. The project covers the full production lifecycle: data ingestion,
 feature engineering, model training with experiment tracking, a containerized
 REST API, CI/CD automation, observability, and cloud deployment.
 
+The focus of this project is **production engineering practices**, not model
+accuracy. See [Known Limitations](#known-limitations) for an honest discussion
+of the model's real-world performance.
+
 ---
 
 ## Table of Contents
@@ -29,6 +33,7 @@ REST API, CI/CD automation, observability, and cloud deployment.
 - [Observability](#observability)
 - [Deployment](#deployment)
 - [Model Details](#model-details)
+- [Known Limitations](#known-limitations)
 - [License](#license)
 
 ---
@@ -99,7 +104,7 @@ text
         │  ML Pipeline                                      │
         │  features → split → baselines + XGBoost          │
         │                    │                              │
-        │                    └─→ MLflow (tracking + registry)│
+        │                    └─→ MLflow (tracking+registry)│
         └──────────────────────┬───────────────────────────┘
                                │
                                ▼
@@ -275,7 +280,7 @@ tehran-house-price/
 │   ├── tracking/               # MLflow setup, run logger, model registry
 │   └── utils/                  # paths, logger
 ├── tests/
-│   ├── unit/                   # 180+ unit tests (mocked dependencies)
+│   ├── unit/                   # unit tests (mocked dependencies)
 │   └── integration/            # E2E and pipeline tests
 ├── Dockerfile                  # dev build (Iran mirrors)
 ├── Dockerfile.prod             # production build (standard mirrors)
@@ -390,7 +395,7 @@ Best model: xgb_price_per_m2 (XGBoost regressor)
 Metric	Value
 Target	price_per_m2 (then multiplied by area)
 Features	area, rooms, parking, storage, elevator, district
-Training data	3,235 cleaned Tehran listings from Kaggle
+Training data	3,235 cleaned Tehran listings from Kaggle (2020-2021)
 Test R²	0.74
 Test MAE	~8.5 M Toman/m²
 Test RMSE	~15 M Toman/m²
@@ -400,3 +405,57 @@ baseline_mean: global mean of prices
 baseline_district_median: median price by district
 Baselines are trained and evaluated in the same pipeline. XGBoost beats
 both on all metrics, which is the sanity check we expect.
+
+Known Limitations
+Being upfront about the model's real-world performance is more valuable
+than pretending it is perfect.
+
+1. Data Drift: The Training Data is from 2020
+The Kaggle dataset used for training reflects the Tehran housing market
+around 2020-2021. Since then, prices have risen approximately 6-7x due
+to inflation and currency devaluation.
+
+Concrete example:
+For a 100 m² apartment in Punak, the model predicts approximately
+42 M Toman/m², while the current market price (as of 2026) is
+approximately 250-300 M Toman/m².
+
+This is a textbook example of concept drift: the relationship between
+features and target has fundamentally changed over time, even though the
+features themselves remain the same.
+
+2. Why This Is Not Fixed with a Multiplier
+Applying a naive inflation factor would hide the real problem. It would
+also:
+
+Miss district-specific inflation rates (luxury areas inflated faster)
+Fail to capture non-linear market dynamics
+Give a false sense of accuracy
+3. The Proper Fix: A Retraining Pipeline
+The infrastructure to solve this problem is already in place in this project:
+
+Component	Status	Purpose
+MLflow Registry	✅ Implemented	Version and stage model artifacts
+Startup model download	✅ Implemented	Swap models without rebuilding Docker
+Prediction logging (PostgreSQL)	✅ Implemented	Capture production inputs for retrain
+CI/CD pipeline	✅ Implemented	Automated testing on every change
+Divar scraper skeleton	✅ Implemented	Foundation for fresh data collection
+Scheduled retraining (Airflow / Prefect)	⏳ Future work	Weekly/monthly retrain on fresh data
+Drift detection (Evidently AI)	⏳ Future work	Alert when input distribution shifts
+4. Missing Features
+The model uses only 6 features. Real-world price also depends on:
+
+Year built and renovation status
+Floor number
+Building orientation
+Distance to metro/BRT
+Interior condition
+Neighborhood safety scores
+Adding these features would likely push R² above 0.85 on fresh data.
+
+5. What This Project Actually Proves
+The value of this project is not model accuracy — it is the
+production infrastructure around the model. Any of the above
+limitations can be addressed by re-running the existing pipeline
+with better data. The MLOps stack around it is what takes months
+to build correctly.
