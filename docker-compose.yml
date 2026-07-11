@@ -4,6 +4,11 @@
 #   docker compose up -d         start in background
 #   docker compose logs -f api   follow logs
 #   docker compose down          stop and remove
+#
+# The trained model is mounted from the host so that the image
+# stays free of large binary artifacts. Make sure you have run
+# the training pipeline first:
+#   python -m tehran_house_price.models.train_pipeline
 
 services:
   api:
@@ -20,6 +25,8 @@ services:
       API_LOG_LEVEL: info
       APP_ENV: prod
       LOG_LEVEL: INFO
+    volumes:
+      - ./artifacts/models:/app/artifacts/models:ro
     restart: unless-stopped
     healthcheck:
       test:

@@ -3,9 +3,11 @@
 # Production-grade Dockerfile for deployment outside Iran
 # (Render, Hugging Face Spaces, GitHub Actions runners, etc.)
 #
-# Use standard registries (deb.debian.org, pypi.org).
-# For local development inside Iran, use the main Dockerfile
-# which uses Iran mirrors.
+# Design note: This image does NOT include the trained model
+# artifacts. Models must be provided at runtime via one of:
+#   - volume mount:   -v $(pwd)/artifacts/models:/app/artifacts/models
+#   - cloud download: fetched at container startup (future phase)
+#   - MLflow Registry: pulled from a remote registry (future phase)
 # =========================================================
 
 # =========================================================
@@ -61,7 +63,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN groupadd --system app \
     && useradd --system --gid app --home-dir /home/app --shell /sbin/nologin app \
-    && mkdir -p /home/app /app /app/logs \
+    && mkdir -p /home/app /app /app/logs /app/artifacts/models \
     && chown -R app:app /home/app /app
 
 WORKDIR /app
@@ -70,7 +72,6 @@ COPY --from=builder --chown=app:app /root/.local /home/app/.local
 
 COPY --chown=app:app src/                       ./src/
 COPY --chown=app:app configs/                   ./configs/
-COPY --chown=app:app artifacts/models/          ./artifacts/models/
 COPY --chown=app:app pyproject.toml README.md   ./
 
 USER app

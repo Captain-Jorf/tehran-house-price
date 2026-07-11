@@ -1,4 +1,15 @@
 # =========================================================
+# Dockerfile
+# Development Dockerfile for use inside Iran.
+# Uses Iran mirrors for apt and pip.
+# For deployment outside Iran (CI, cloud), use Dockerfile.prod.
+#
+# Design note: This image does NOT include the trained model
+# artifacts. Models must be provided at runtime via volume mount.
+# See docker-compose.yml for local dev setup.
+# =========================================================
+
+# =========================================================
 # Stage 1: builder
 # =========================================================
 FROM python:3.10.14-slim-bookworm AS builder
@@ -12,8 +23,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /build
 
-# Use Iran mirror for Debian apt. Strip bookworm-updates only (Iran mirror has it stale),
-# but keep bookworm itself.
+# Use Iran mirror for Debian apt. Strip bookworm-updates only.
 RUN set -eux; \
     if [ -f /etc/apt/sources.list.d/debian.sources ]; then \
         sed -i 's|http://deb.debian.org|https://mirror.iranserver.com|g' /etc/apt/sources.list.d/debian.sources; \
@@ -81,7 +91,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN groupadd --system app \
     && useradd --system --gid app --home-dir /home/app --shell /sbin/nologin app \
-    && mkdir -p /home/app /app /app/logs \
+    && mkdir -p /home/app /app /app/logs /app/artifacts/models \
     && chown -R app:app /home/app /app
 
 WORKDIR /app
@@ -90,7 +100,6 @@ COPY --from=builder --chown=app:app /root/.local /home/app/.local
 
 COPY --chown=app:app src/                       ./src/
 COPY --chown=app:app configs/                   ./configs/
-COPY --chown=app:app artifacts/models/          ./artifacts/models/
 COPY --chown=app:app pyproject.toml README.md   ./
 
 USER app
