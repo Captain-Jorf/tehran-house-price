@@ -188,6 +188,10 @@ class ModelService:
 
     @staticmethod
     def _load_metadata(metadata_path: Path) -> dict[str, Any]:
+        """Load model metadata from a JSON file.
+
+        Returns an empty dict if the file is missing, unreadable, or not a JSON object.
+        """
         if not metadata_path.exists():
             logger.warning("metadata file not found: %s", metadata_path)
             return {}

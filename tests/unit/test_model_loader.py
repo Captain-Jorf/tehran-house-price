@@ -249,3 +249,38 @@ def test_load_real_model_artifact() -> None:
 
     assert predictions.shape == (1,)
     assert predictions[0] > 0
+
+
+def test_load_metadata_reads_valid_json_file(tmp_path: Path) -> None:
+    """Regression test: _load_metadata must actually read the file contents."""
+    metadata_file = tmp_path / "test_metadata.json"
+    payload = {"model_name": "xgb_test", "version": "1.0", "features": ["a", "b"]}
+    metadata_file.write_text(json.dumps(payload), encoding="utf-8")
+
+    result = ModelService._load_metadata(metadata_file)
+
+    assert result == payload
+    assert result["model_name"] == "xgb_test"
+
+
+def test_load_metadata_returns_empty_dict_when_file_missing(tmp_path: Path) -> None:
+    """_load_metadata returns empty dict for non-existent file."""
+    missing_file = tmp_path / "does_not_exist.json"
+    result = ModelService._load_metadata(missing_file)
+    assert result == {}
+
+
+def test_load_metadata_returns_empty_dict_when_file_is_not_json(tmp_path: Path) -> None:
+    """_load_metadata returns empty dict for malformed JSON."""
+    bad_file = tmp_path / "bad.json"
+    bad_file.write_text("not valid json {{{", encoding="utf-8")
+    result = ModelService._load_metadata(bad_file)
+    assert result == {}
+
+
+def test_load_metadata_returns_empty_dict_when_json_is_not_object(tmp_path: Path) -> None:
+    """_load_metadata returns empty dict when JSON root is not an object."""
+    array_file = tmp_path / "array.json"
+    array_file.write_text("[1, 2, 3]", encoding="utf-8")
+    result = ModelService._load_metadata(array_file)
+    assert result == {}
