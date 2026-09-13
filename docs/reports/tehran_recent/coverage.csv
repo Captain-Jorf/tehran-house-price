@@ -1,0 +1,121 @@
+series,month_jalali,geography,raw_value,raw_unit,source_id,evidence,quality,transaction_count,price_per_m2_toman,source_url,retrieved_on,status
+cbi_transaction_mean,140006,Tehran,31703400.0,dlearn_pre_140105,dlearn,"1400,6,-1,31703400,7789",scale_inferred_crosschecked,7789.0,31703400.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140007,Tehran,31631100.0,dlearn_pre_140105,dlearn,"1400,7,-1,31631100,5471",scale_inferred_crosschecked,5471.0,31631100.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140008,Tehran,32009000.0,dlearn_pre_140105,dlearn,"1400,8,-1,32009000,7304",scale_inferred_crosschecked,7304.0,32009000.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140009,Tehran,32590800.0,dlearn_pre_140105,dlearn,"1400,9,-1,32590800,9772",scale_inferred_crosschecked,9772.0,32590800.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140010,Tehran,32936400.0,dlearn_pre_140105,dlearn,"1400,10,-1,32936400,9816",scale_inferred_crosschecked,9816.0,32936400.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140011,Tehran,33056200.0,dlearn_pre_140105,dlearn,"1400,11,-1,33056200,8532",scale_inferred_crosschecked,8532.0,33056200.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140012,Tehran,35120000.0,dlearn_pre_140105,dlearn,"1400,12,-1,35120000,6834",scale_inferred_crosschecked,6834.0,35120000.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140101,Tehran,34272700.0,dlearn_pre_140105,dlearn,"1401,1,-1,34272700,3427",scale_inferred_crosschecked,3427.0,34272700.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140102,Tehran,36351500.0,dlearn_pre_140105,dlearn,"1401,2,-1,36351500,10490",scale_inferred_crosschecked,10490.0,36351500.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140103,Tehran,39414500.0,dlearn_pre_140105,dlearn,"1401,3,-1,39414500,13874",scale_inferred_crosschecked,13874.0,39414500.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140104,Tehran,41704900.0,dlearn_pre_140105,dlearn,"1401,4,-1,41704900,10294",scale_inferred_crosschecked,10294.0,41704900.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140105,Tehran,427299.0,dlearn_post_140105,dlearn,"1401,5,-1,427299,7825",scale_inferred_crosschecked,7825.0,42729900.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140106,Tehran,432169.0,dlearn_post_140105,dlearn,"1401,6,-1,432169,6033",scale_inferred_crosschecked,6033.0,43216900.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140107,Tehran,437249.0,dlearn_post_140105,dlearn,"1401,7,-1,437249,5416",scale_inferred_crosschecked,5416.0,43724900.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140108,Tehran,467048.0,dlearn_post_140105,dlearn,"1401,8,-1,467048,8005",scale_inferred_crosschecked,8005.0,46704800.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140109,Tehran,480737.0,dlearn_post_140105,dlearn,"1401,9,-1,480737,10184",scale_inferred_crosschecked,10184.0,48073700.0,https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv,2026-09-12,collected
+cbi_transaction_mean,140110,,,,,,,,,,,not_collected
+cbi_transaction_mean,140111,,,,,,,,,,,not_collected
+cbi_transaction_mean,140112,,,,,,,,,,,not_collected
+cbi_transaction_mean,140201,,,,,,,,,,,not_collected
+cbi_transaction_mean,140202,Tehran,753.2,million_irr,sarmayeh_02,Price row: Ordibehesht 1402=753.2; Farvardin 1403=816.3; Ordibehesht 1403=847.5 (million IRR),secondary_report,,75320000.0,https://sarmayesazan.com/blog/%D8%AA%D8%BA%DB%8C%DB%8C%D8%B1%D8%A7%D8%AA-%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1-%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%B4%D9%87%D8%B1-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AF/,2026-09-12,collected
+cbi_transaction_mean,140203,Tehran,783.0,million_irr,sarmayeh_03,Price row: Khordad 1402=783.0; Ordibehesht 1403=847.5; Khordad 1403=859.1 (million IRR),secondary_report,,78300000.0,https://sarmayesazan.com/blog/%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AE%D8%B1%D8%AF%D8%A7%D8%AF-1403/,2026-09-12,collected
+cbi_transaction_mean,140204,Tehran,765.4,million_irr,sarmayeh_04,Price row: Tir 1403=874.6; Khordad 1403=859.1; Tir 1402=765.4 (million IRR),secondary_report,,76540000.0,https://sarmayesazan.com/blog/%DA%AF%D8%B2%D8%A7%D8%B1%D8%B4-%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AA%DB%8C%D8%B1-1403-%D8%AA%D8%AD%D9%84%DB%8C%D9%84-%D8%AC%D8%A7/,2026-09-12,collected
+cbi_transaction_mean,140205,Tehran,757.9,million_irr,sarmayeh_05,Price row: Mordad 1403=885.0; Tir 1403=874.6; Mordad 1402=757.9 (million IRR),secondary_report,,75790000.0,https://sarmayesazan.com/blog/%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D9%85%D8%B1%D8%AF%D8%A7%D8%AF-1403/,2026-09-12,collected
+cbi_transaction_mean,140206,Tehran,75330000.0,toman,tejarat_h2,از متری 75 میلیون و 330 هزار تومان به حدود متری 76 میلیون تومان رسیده,secondary_report,,75330000.0,https://tejaratnews.com/%D8%A8%D8%AE%D8%B4-%D9%85%D8%B3%DA%A9%D9%86-48/904124-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D9%86%DB%8C%D9%85%D9%87-%D8%AF%D9%88%D9%85-%D8%B3%D8%A7%D9%84,2026-09-12,collected
+cbi_transaction_mean,140207,Tehran,76000000.0,toman,tejarat_h2,آغاز فصل پاییز ... حدود متری 76 میلیون تومان,rounded_secondary_report,,76000000.0,https://tejaratnews.com/%D8%A8%D8%AE%D8%B4-%D9%85%D8%B3%DA%A9%D9%86-48/904124-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D9%86%DB%8C%D9%85%D9%87-%D8%AF%D9%88%D9%85-%D8%B3%D8%A7%D9%84,2026-09-12,collected
+cbi_transaction_mean,140208,Tehran,75770000.0,toman,otagh_08,آبان 1402 ... 75 میلیون و 770 هزار تومان,secondary_report,,75770000.0,https://otaghiranonline.ir/news/68538/%D8%AA%D9%88%D8%B1%D9%85-%D9%86%D9%82%D8%B7%D9%87-%D8%A8%D9%87-%D9%86%D9%82%D8%B7%D9%87-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%A8%D9%87-62-2-%D8%AF%D8%B1%D8%B5%D8%AF-%D8%B1%D8%B3%DB%8C%D8%AF,2026-09-12,collected
+cbi_transaction_mean,140209,Tehran,740.9,million_irr,tasnim_09,متوسط قیمت ... در آذرماه 1402 به 740.9 میلیون ریال رسید,secondary_report,,74090000.0,https://www.tasnimnews.com/fa/news/1402/10/03/3011261/%DA%A9%D8%A7%D9%87%D8%B4-2-2-%D8%AF%D8%B1%D8%B5%D8%AF%DB%8C-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D8%A2%D8%B0%D8%B1%D9%85%D8%A7%D9%87-%D9%85%D8%AA%D9%88%D8%B3%D8%B7-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-74-%D9%85%DB%8C%D9%84%DB%8C%D9%88%D9%86-%D8%AA%D9%88%D9%85%D8%A7%D9%86-%D8%B4%D8%AF,2026-09-12,collected
+cbi_transaction_mean,140210,Tehran,75390000.0,toman,tejarat_h2,دی ... متری 75 میلیون و 390 هزار تومان,secondary_report,,75390000.0,https://tejaratnews.com/%D8%A8%D8%AE%D8%B4-%D9%85%D8%B3%DA%A9%D9%86-48/904124-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D9%86%DB%8C%D9%85%D9%87-%D8%AF%D9%88%D9%85-%D8%B3%D8%A7%D9%84,2026-09-12,collected
+cbi_transaction_mean,140211,,,,,,,,,,,not_collected
+cbi_transaction_mean,140212,Tehran,81440000.0,toman,tejarat_h2,اسفند ... متری 81 میلیون و 440 هزار تومان,secondary_report,,81440000.0,https://tejaratnews.com/%D8%A8%D8%AE%D8%B4-%D9%85%D8%B3%DA%A9%D9%86-48/904124-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D9%86%DB%8C%D9%85%D9%87-%D8%AF%D9%88%D9%85-%D8%B3%D8%A7%D9%84,2026-09-12,collected
+cbi_transaction_mean,140301,Tehran,816.3,million_irr,sarmayeh_02,Price row: Farvardin 1403=816.3 (million IRR),secondary_report,,81630000.0,https://sarmayesazan.com/blog/%D8%AA%D8%BA%DB%8C%DB%8C%D8%B1%D8%A7%D8%AA-%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1-%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%B4%D9%87%D8%B1-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AF/,2026-09-12,collected
+cbi_transaction_mean,140302,Tehran,847.5,million_irr,sarmayeh_02,Price row: Ordibehesht 1403=847.5 (million IRR),secondary_report,,84750000.0,https://sarmayesazan.com/blog/%D8%AA%D8%BA%DB%8C%DB%8C%D8%B1%D8%A7%D8%AA-%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1-%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%B4%D9%87%D8%B1-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AF/,2026-09-12,collected
+cbi_transaction_mean,140303,Tehran,859.1,million_irr,sarmayeh_03,Price row: Khordad 1403=859.1 (million IRR),secondary_report,,85910000.0,https://sarmayesazan.com/blog/%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AE%D8%B1%D8%AF%D8%A7%D8%AF-1403/,2026-09-12,collected
+cbi_transaction_mean,140304,Tehran,874.6,million_irr,sarmayeh_05,Price row: Tir 1403=874.6 (million IRR),secondary_report,,87460000.0,https://sarmayesazan.com/blog/%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D9%85%D8%B1%D8%AF%D8%A7%D8%AF-1403/,2026-09-12,collected
+cbi_transaction_mean,140305,Tehran,885.0,million_irr,sarmayeh_05,Price row: Mordad 1403=885.0 (million IRR),secondary_report,,88500000.0,https://sarmayesazan.com/blog/%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D9%85%D8%B1%D8%AF%D8%A7%D8%AF-1403/,2026-09-12,collected
+cbi_transaction_mean,140306,,,,,,,,,,,not_collected
+cbi_transaction_mean,140307,,,,,,,,,,,not_collected
+cbi_transaction_mean,140308,,,,,,,,,,,not_collected
+cbi_transaction_mean,140309,,,,,,,,,,,not_collected
+cbi_transaction_mean,140310,,,,,,,,,,,not_collected
+cbi_transaction_mean,140311,,,,,,,,,,,not_collected
+cbi_transaction_mean,140312,,,,,,,,,,,not_collected
+cbi_transaction_mean,140401,,,,,,,,,,,not_collected
+cbi_transaction_mean,140402,,,,,,,,,,,not_collected
+cbi_transaction_mean,140403,,,,,,,,,,,not_collected
+cbi_transaction_mean,140404,,,,,,,,,,,not_collected
+cbi_transaction_mean,140405,,,,,,,,,,,not_collected
+cbi_transaction_mean,140406,,,,,,,,,,,not_collected
+cbi_transaction_mean,140407,,,,,,,,,,,not_collected
+cbi_transaction_mean,140408,,,,,,,,,,,not_collected
+cbi_transaction_mean,140409,,,,,,,,,,,not_collected
+cbi_transaction_mean,140410,,,,,,,,,,,not_collected
+cbi_transaction_mean,140411,,,,,,,,,,,not_collected
+cbi_transaction_mean,140412,,,,,,,,,,,not_collected
+cbi_transaction_mean,140501,,,,,,,,,,,not_collected
+cbi_transaction_mean,140502,,,,,,,,,,,not_collected
+cbi_transaction_mean,140503,,,,,,,,,,,not_collected
+cbi_transaction_mean,140504,,,,,,,,,,,not_collected
+cbi_transaction_mean,140505,,,,,,,,,,,not_collected
+kilid_listing_indicator,140006,,,,,,,,,,,not_collected
+kilid_listing_indicator,140007,,,,,,,,,,,not_collected
+kilid_listing_indicator,140008,,,,,,,,,,,not_collected
+kilid_listing_indicator,140009,,,,,,,,,,,not_collected
+kilid_listing_indicator,140010,,,,,,,,,,,not_collected
+kilid_listing_indicator,140011,,,,,,,,,,,not_collected
+kilid_listing_indicator,140012,,,,,,,,,,,not_collected
+kilid_listing_indicator,140101,,,,,,,,,,,not_collected
+kilid_listing_indicator,140102,,,,,,,,,,,not_collected
+kilid_listing_indicator,140103,,,,,,,,,,,not_collected
+kilid_listing_indicator,140104,,,,,,,,,,,not_collected
+kilid_listing_indicator,140105,,,,,,,,,,,not_collected
+kilid_listing_indicator,140106,,,,,,,,,,,not_collected
+kilid_listing_indicator,140107,,,,,,,,,,,not_collected
+kilid_listing_indicator,140108,,,,,,,,,,,not_collected
+kilid_listing_indicator,140109,,,,,,,,,,,not_collected
+kilid_listing_indicator,140110,,,,,,,,,,,not_collected
+kilid_listing_indicator,140111,,,,,,,,,,,not_collected
+kilid_listing_indicator,140112,,,,,,,,,,,not_collected
+kilid_listing_indicator,140201,,,,,,,,,,,not_collected
+kilid_listing_indicator,140202,,,,,,,,,,,not_collected
+kilid_listing_indicator,140203,,,,,,,,,,,not_collected
+kilid_listing_indicator,140204,,,,,,,,,,,not_collected
+kilid_listing_indicator,140205,,,,,,,,,,,not_collected
+kilid_listing_indicator,140206,,,,,,,,,,,not_collected
+kilid_listing_indicator,140207,,,,,,,,,,,not_collected
+kilid_listing_indicator,140208,,,,,,,,,,,not_collected
+kilid_listing_indicator,140209,,,,,,,,,,,not_collected
+kilid_listing_indicator,140210,,,,,,,,,,,not_collected
+kilid_listing_indicator,140211,,,,,,,,,,,not_collected
+kilid_listing_indicator,140212,,,,,,,,,,,not_collected
+kilid_listing_indicator,140301,,,,,,,,,,,not_collected
+kilid_listing_indicator,140302,,,,,,,,,,,not_collected
+kilid_listing_indicator,140303,,,,,,,,,,,not_collected
+kilid_listing_indicator,140304,,,,,,,,,,,not_collected
+kilid_listing_indicator,140305,,,,,,,,,,,not_collected
+kilid_listing_indicator,140306,,,,,,,,,,,not_collected
+kilid_listing_indicator,140307,,,,,,,,,,,not_collected
+kilid_listing_indicator,140308,,,,,,,,,,,not_collected
+kilid_listing_indicator,140309,,,,,,,,,,,not_collected
+kilid_listing_indicator,140310,,,,,,,,,,,not_collected
+kilid_listing_indicator,140311,,,,,,,,,,,not_collected
+kilid_listing_indicator,140312,,,,,,,,,,,not_collected
+kilid_listing_indicator,140401,,,,,,,,,,,not_collected
+kilid_listing_indicator,140402,,,,,,,,,,,not_collected
+kilid_listing_indicator,140403,,,,,,,,,,,not_collected
+kilid_listing_indicator,140404,,,,,,,,,,,not_collected
+kilid_listing_indicator,140405,,,,,,,,,,,not_collected
+kilid_listing_indicator,140406,Tehran,98.7,million_toman,kilid,Displayed trend table: 140406 = 98.7 million toman,platform_indicator_methodology_unverified,,98700000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140407,Tehran,100.0,million_toman,kilid,Displayed trend table: 140407 = 100 million toman,platform_indicator_methodology_unverified,,100000000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140408,Tehran,101.9,million_toman,kilid,Displayed trend table: 140408 = 101.9 million toman,platform_indicator_methodology_unverified,,101900000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140409,Tehran,105.6,million_toman,kilid,Displayed trend table: 140409 = 105.6 million toman,platform_indicator_methodology_unverified,,105600000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140410,Tehran,110.4,million_toman,kilid,Displayed trend table: 140410 = 110.4 million toman,platform_indicator_methodology_unverified,,110400000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140411,Tehran,119.7,million_toman,kilid,Displayed trend table: 140411 = 119.7 million toman,platform_indicator_methodology_unverified,,119700000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140412,Tehran,126.4,million_toman,kilid,Displayed trend table: 140412 = 126.4 million toman,platform_indicator_methodology_unverified,,126400000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140501,Tehran,135.0,million_toman,kilid,Displayed trend table: 140501 = 135 million toman,platform_indicator_methodology_unverified,,135000000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140502,Tehran,161.6,million_toman,kilid,Displayed trend table: 140502 = 161.6 million toman,platform_indicator_methodology_unverified,,161600000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140503,Tehran,185.0,million_toman,kilid,Displayed trend table: 140503 = 185 million toman,platform_indicator_methodology_unverified,,185000000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140504,Tehran,195.0,million_toman,kilid,Displayed trend table: 140504 = 195 million toman,platform_indicator_methodology_unverified,,195000000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected
+kilid_listing_indicator,140505,Tehran,210.0,million_toman,kilid,Displayed trend table: 140505 = 210 million toman,platform_indicator_methodology_unverified,,210000000.0,https://kilid.com/house-prices/tehran,2026-09-12,collected

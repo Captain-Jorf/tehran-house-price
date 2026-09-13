@@ -1,0 +1,27 @@
+{
+  "dataset": "Tehran monthly average price per square metre (secondary-source historical series)",
+  "kind": "observed published values; not synthetic; not individual listings",
+  "source_repository": "https://github.com/amiralimadadi/Regression_TheranHousing",
+  "source_commit": "ac6a6406f2c5507ab9a905859efc1b61cb4d17c1",
+  "source_file": "TehranHousingPriceBackground.csv",
+  "retrieved_on": "2026-09-12",
+  "retrieval_method": "GitHub contents API at pinned commit, base64 decoded without modification",
+  "source_sha256": "48e7d19787ea8738140c57df735aa18c0abdf3e0c6dd8b0d88f6ceb20355199b",
+  "calendar": "Solar Hijri (Jalali)",
+  "period_start": 139501,
+  "period_end": 139912,
+  "frequency": "monthly",
+  "observations": 60,
+  "measure_evidence": "Analysis.ipynb plot title: Average Price Per Meter in Tehran (from 1395 to 1399)",
+  "currency": "not explicitly documented upstream; no conversion performed",
+  "primary_source_verification": "Not independently verified against official monthly releases",
+  "license": "No explicit dataset redistribution license identified; do not assume project license applies. Check upstream permissions before redistribution or commercial use.",
+  "transformations": [
+    "Split YYYYMM into Jalali year/month",
+    "Rename Price without modifying values",
+    "Add geography, currency status and pinned provenance URL"
+  ],
+  "missing_months": 0,
+  "imputed_values": 0,
+  "synthetic_rows": 0
+}

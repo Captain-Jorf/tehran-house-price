@@ -1,0 +1,576 @@
+{
+  "as_of": "2026-09-12",
+  "target_start_jalali": 140006,
+  "target_end_jalali": 140505,
+  "target_definition": "Latest 60 completed Jalali months at as_of; current incomplete month 140506 excluded. Not exact Gregorian rolling-window boundary.",
+  "extraction": "Manually curated factual extracts from web_search/fetch_page results. Not raw source HTML and not independently audited.",
+  "license": "No blanket dataset license asserted. Facts only, with attribution; verify upstream terms before commercial reuse.",
+  "sources": {
+    "dlearn": {
+      "url": "https://d-learn.ir/wp-content/uploads/2023/01/cbi_houseprice_tehran.csv",
+      "title": "D-learn: CBI monthly data, city rows (region=-1)",
+      "retrieved_on": "2026-09-12",
+      "access": "fetch_page",
+      "notes": "Selected rows transcribed from returned CSV chunks 3 and 4, not a byte-for-byte full download. Scale changes at 1401/05: values become 100 times smaller. Conversion is an explicit analyst correction supported by cross-checks; the publisher does not document this change."
+    },
+    "dlearn_doc": {
+      "url": "https://d-learn.ir/p/tehran-houseprice-data-cbi/",
+      "title": "D-learn data dictionary",
+      "retrieved_on": "2026-09-12",
+      "access": "fetch_page",
+      "notes": "region=-1 denotes Tehran city; raw source attributed to CBI."
+    },
+    "unit_140006": {
+      "url": "https://www.iribnews.ir/fa/news/3233813/%D9%85%D8%AA%D9%88%D8%B3%D8%B7-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AF%D8%B1-%D8%B4%D9%87%D8%B1%DB%8C%D9%88%D8%B1-%DB%B1%DB%B4%DB%B0%DB%B0",
+      "title": "CBI via IRIB: Shahrivar 1400",
+      "retrieved_on": "2026-09-12",
+      "access": "web_search",
+      "notes": "Reported city price: 31,700,000 toman; corroborates pre-change CSV magnitude, not every digit."
+    },
+    "unit_140108": {
+      "url": "https://www.sarpoosh.com/economy/housing-construction/housing-construction1401091169.html",
+      "title": "CBI via Tasnim/Sarpoosh: Aban 1401",
+      "retrieved_on": "2026-09-12",
+      "access": "web_search",
+      "notes": "467 million IRR (46.7 million toman); corroborates corrected post-change CSV scale, not every digit."
+    },
+    "sarmayeh_02": {
+      "url": "https://sarmayesazan.com/blog/%D8%AA%D8%BA%DB%8C%DB%8C%D8%B1%D8%A7%D8%AA-%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1-%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%B4%D9%87%D8%B1-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AF/",
+      "title": "CBI via Sarmayesazan: Ordibehesht 1403",
+      "retrieved_on": "2026-09-12",
+      "access": "fetch_page",
+      "notes": "Only price table used. Age/transaction tables elsewhere on the page contain inconsistent totals and are excluded."
+    },
+    "sarmayeh_03": {
+      "url": "https://sarmayesazan.com/blog/%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AE%D8%B1%D8%AF%D8%A7%D8%AF-1403/",
+      "title": "CBI via Sarmayesazan: Khordad 1403",
+      "retrieved_on": "2026-09-12",
+      "access": "fetch_page",
+      "notes": "Use numeric price table (859.1), not prose typo 1.859. June 1403 cross-checked with Fardaye Eghtesad."
+    },
+    "sarmayeh_04": {
+      "url": "https://sarmayesazan.com/blog/%DA%AF%D8%B2%D8%A7%D8%B1%D8%B4-%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%AA%DB%8C%D8%B1-1403-%D8%AA%D8%AD%D9%84%DB%8C%D9%84-%D8%AC%D8%A7/",
+      "title": "CBI via Sarmayesazan: Tir 1403",
+      "retrieved_on": "2026-09-12",
+      "access": "web_search",
+      "notes": "Price comparison table only."
+    },
+    "sarmayeh_05": {
+      "url": "https://sarmayesazan.com/blog/%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D9%85%D8%B1%D8%AF%D8%A7%D8%AF-1403/",
+      "title": "CBI via Sarmayesazan: Mordad 1403",
+      "retrieved_on": "2026-09-12",
+      "access": "fetch_page",
+      "notes": "Price comparison table only; age table has inconsistent counts and is excluded."
+    },
+    "farda_03": {
+      "url": "https://www.fardayeeghtesad.com/news/39676/%D9%85%D8%AA%D9%88%D8%B3%D8%B7-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%A7%D8%B9%D9%84%D8%A7%D9%85-%D8%B4%D8%AF",
+      "title": "CBI via Fardaye Eghtesad: Khordad 1403",
+      "retrieved_on": "2026-09-12",
+      "access": "fetch_page",
+      "notes": "Body explicitly says Khordad 1403: 85,910,000 toman. Lead incorrectly names Ordibehesht; body/date used."
+    },
+    "tejarat_h2": {
+      "url": "https://tejaratnews.com/%D8%A8%D8%AE%D8%B4-%D9%85%D8%B3%DA%A9%D9%86-48/904124-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D9%86%DB%8C%D9%85%D9%87-%D8%AF%D9%88%D9%85-%D8%B3%D8%A7%D9%84",
+      "title": "CBI via Tejaratnews: second half of 1402",
+      "retrieved_on": "2026-09-12",
+      "access": "fetch_page",
+      "notes": "Use explicit Shahrivar/Mehr/Dey/Esfand values only. Aban/Azar prose is approximate or inconsistent; independent reports used instead. Bahman only states a price band; not converted to an exact observation."
+    },
+    "otagh_08": {
+      "url": "https://otaghiranonline.ir/news/68538/%D8%AA%D9%88%D8%B1%D9%85-%D9%86%D9%82%D8%B7%D9%87-%D8%A8%D9%87-%D9%86%D9%82%D8%B7%D9%87-%D9%85%D8%B3%DA%A9%D9%86-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-%D8%A8%D9%87-62-2-%D8%AF%D8%B1%D8%B5%D8%AF-%D8%B1%D8%B3%DB%8C%D8%AF",
+      "title": "CBI via Iran Chamber: Aban 1402",
+      "retrieved_on": "2026-09-12",
+      "access": "web_search",
+      "notes": "Explicit 75,770,000 toman."
+    },
+    "tasnim_09": {
+      "url": "https://www.tasnimnews.com/fa/news/1402/10/03/3011261/%DA%A9%D8%A7%D9%87%D8%B4-2-2-%D8%AF%D8%B1%D8%B5%D8%AF%DB%8C-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D8%A2%D8%B0%D8%B1%D9%85%D8%A7%D9%87-%D9%85%D8%AA%D9%88%D8%B3%D8%B7-%D9%82%DB%8C%D9%85%D8%AA-%D9%85%D8%B3%DA%A9%D9%86-%D8%AF%D8%B1-%D8%AA%D9%87%D8%B1%D8%A7%D9%86-74-%D9%85%DB%8C%D9%84%DB%8C%D9%88%D9%86-%D8%AA%D9%88%D9%85%D8%A7%D9%86-%D8%B4%D8%AF",
+      "title": "CBI via Tasnim: Azar 1402",
+      "retrieved_on": "2026-09-12",
+      "access": "web_search",
+      "notes": "740.9 million IRR. Rounding differs from Ecoiran 74,088,000 toman by 2,000 toman; do not claim precision beyond source."
+    },
+    "kilid": {
+      "url": "https://kilid.com/house-prices/tehran",
+      "title": "Kilid: displayed monthly city price trend",
+      "retrieved_on": "2026-09-12",
+      "access": "fetch_page",
+      "notes": "The current page describes listing-based prices and estimated typical-home price. Trend methodology/history revisions are not fully documented. Treat as published platform indicator, not verified transactions or raw listing observations. Monthly table disagrees with headline MoM (210/195 - 1 = 7.69%, headline 2.2%); only table used. Query period=60 still returned just 12 months."
+    }
+  },
+  "records": [
+    {
+      "month_jalali": 140006,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 31703400,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1400,6,-1,31703400,7789",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 7789
+    },
+    {
+      "month_jalali": 140007,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 31631100,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1400,7,-1,31631100,5471",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 5471
+    },
+    {
+      "month_jalali": 140008,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 32009000,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1400,8,-1,32009000,7304",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 7304
+    },
+    {
+      "month_jalali": 140009,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 32590800,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1400,9,-1,32590800,9772",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 9772
+    },
+    {
+      "month_jalali": 140010,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 32936400,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1400,10,-1,32936400,9816",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 9816
+    },
+    {
+      "month_jalali": 140011,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 33056200,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1400,11,-1,33056200,8532",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 8532
+    },
+    {
+      "month_jalali": 140012,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 35120000,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1400,12,-1,35120000,6834",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 6834
+    },
+    {
+      "month_jalali": 140101,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 34272700,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1401,1,-1,34272700,3427",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 3427
+    },
+    {
+      "month_jalali": 140102,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 36351500,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1401,2,-1,36351500,10490",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 10490
+    },
+    {
+      "month_jalali": 140103,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 39414500,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1401,3,-1,39414500,13874",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 13874
+    },
+    {
+      "month_jalali": 140104,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 41704900,
+      "raw_unit": "dlearn_pre_140105",
+      "source_id": "dlearn",
+      "evidence": "1401,4,-1,41704900,10294",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 10294
+    },
+    {
+      "month_jalali": 140105,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 427299,
+      "raw_unit": "dlearn_post_140105",
+      "source_id": "dlearn",
+      "evidence": "1401,5,-1,427299,7825",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 7825
+    },
+    {
+      "month_jalali": 140106,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 432169,
+      "raw_unit": "dlearn_post_140105",
+      "source_id": "dlearn",
+      "evidence": "1401,6,-1,432169,6033",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 6033
+    },
+    {
+      "month_jalali": 140107,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 437249,
+      "raw_unit": "dlearn_post_140105",
+      "source_id": "dlearn",
+      "evidence": "1401,7,-1,437249,5416",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 5416
+    },
+    {
+      "month_jalali": 140108,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 467048,
+      "raw_unit": "dlearn_post_140105",
+      "source_id": "dlearn",
+      "evidence": "1401,8,-1,467048,8005",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 8005
+    },
+    {
+      "month_jalali": 140109,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 480737,
+      "raw_unit": "dlearn_post_140105",
+      "source_id": "dlearn",
+      "evidence": "1401,9,-1,480737,10184",
+      "quality": "scale_inferred_crosschecked",
+      "transaction_count": 10184
+    },
+    {
+      "month_jalali": 140202,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 753.2,
+      "raw_unit": "million_irr",
+      "source_id": "sarmayeh_02",
+      "evidence": "Price row: Ordibehesht 1402=753.2; Farvardin 1403=816.3; Ordibehesht 1403=847.5 (million IRR)",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140203,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 783.0,
+      "raw_unit": "million_irr",
+      "source_id": "sarmayeh_03",
+      "evidence": "Price row: Khordad 1402=783.0; Ordibehesht 1403=847.5; Khordad 1403=859.1 (million IRR)",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140204,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 765.4,
+      "raw_unit": "million_irr",
+      "source_id": "sarmayeh_04",
+      "evidence": "Price row: Tir 1403=874.6; Khordad 1403=859.1; Tir 1402=765.4 (million IRR)",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140205,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 757.9,
+      "raw_unit": "million_irr",
+      "source_id": "sarmayeh_05",
+      "evidence": "Price row: Mordad 1403=885.0; Tir 1403=874.6; Mordad 1402=757.9 (million IRR)",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140206,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 75330000,
+      "raw_unit": "toman",
+      "source_id": "tejarat_h2",
+      "evidence": "از متری 75 میلیون و 330 هزار تومان به حدود متری 76 میلیون تومان رسیده",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140207,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 76000000,
+      "raw_unit": "toman",
+      "source_id": "tejarat_h2",
+      "evidence": "آغاز فصل پاییز ... حدود متری 76 میلیون تومان",
+      "quality": "rounded_secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140208,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 75770000,
+      "raw_unit": "toman",
+      "source_id": "otagh_08",
+      "evidence": "آبان 1402 ... 75 میلیون و 770 هزار تومان",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140209,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 740.9,
+      "raw_unit": "million_irr",
+      "source_id": "tasnim_09",
+      "evidence": "متوسط قیمت ... در آذرماه 1402 به 740.9 میلیون ریال رسید",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140210,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 75390000,
+      "raw_unit": "toman",
+      "source_id": "tejarat_h2",
+      "evidence": "دی ... متری 75 میلیون و 390 هزار تومان",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140212,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 81440000,
+      "raw_unit": "toman",
+      "source_id": "tejarat_h2",
+      "evidence": "اسفند ... متری 81 میلیون و 440 هزار تومان",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140301,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 816.3,
+      "raw_unit": "million_irr",
+      "source_id": "sarmayeh_02",
+      "evidence": "Price row: Farvardin 1403=816.3 (million IRR)",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140302,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 847.5,
+      "raw_unit": "million_irr",
+      "source_id": "sarmayeh_02",
+      "evidence": "Price row: Ordibehesht 1403=847.5 (million IRR)",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140303,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 859.1,
+      "raw_unit": "million_irr",
+      "source_id": "sarmayeh_03",
+      "evidence": "Price row: Khordad 1403=859.1 (million IRR)",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140304,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 874.6,
+      "raw_unit": "million_irr",
+      "source_id": "sarmayeh_05",
+      "evidence": "Price row: Tir 1403=874.6 (million IRR)",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140305,
+      "series": "cbi_transaction_mean",
+      "geography": "Tehran",
+      "raw_value": 885.0,
+      "raw_unit": "million_irr",
+      "source_id": "sarmayeh_05",
+      "evidence": "Price row: Mordad 1403=885.0 (million IRR)",
+      "quality": "secondary_report",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140406,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 98.7,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140406 = 98.7 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140407,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 100,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140407 = 100 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140408,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 101.9,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140408 = 101.9 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140409,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 105.6,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140409 = 105.6 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140410,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 110.4,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140410 = 110.4 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140411,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 119.7,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140411 = 119.7 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140412,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 126.4,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140412 = 126.4 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140501,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 135,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140501 = 135 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140502,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 161.6,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140502 = 161.6 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140503,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 185,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140503 = 185 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140504,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 195,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140504 = 195 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    },
+    {
+      "month_jalali": 140505,
+      "series": "kilid_listing_indicator",
+      "geography": "Tehran",
+      "raw_value": 210,
+      "raw_unit": "million_toman",
+      "source_id": "kilid",
+      "evidence": "Displayed trend table: 140505 = 210 million toman",
+      "quality": "platform_indicator_methodology_unverified",
+      "transaction_count": null
+    }
+  ]
+}
