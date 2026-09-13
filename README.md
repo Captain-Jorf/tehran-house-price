@@ -1,51 +1,168 @@
-# Tehran House Price Prediction — Production MLOps Pipeline
+# Tehran House Price — ML Engineering & Data Quality
 
 [![CI Pipeline](https://github.com/Captain-Jorf/tehran-house-price/actions/workflows/ci.yml/badge.svg)](https://github.com/Captain-Jorf/tehran-house-price/actions/workflows/ci.yml)
 [![Docker Build](https://github.com/Captain-Jorf/tehran-house-price/actions/workflows/docker.yml/badge.svg)](https://github.com/Captain-Jorf/tehran-house-price/actions/workflows/docker.yml)
-[![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://github.com/Captain-Jorf/tehran-house-price/pkgs/container/tehran-house-price)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10-blue.svg)](pyproject.toml)
+[![License: MIT](https://img.shields.io/badge/code_license-MIT-green.svg)](pyproject.toml)
 
-**Live API:** https://tehran-house-price-api.onrender.com/docs
+An end-to-end Tehran housing ML project combining a property-price serving pipeline with **auditable data collection, temporal backtesting, and explicit data-quality controls**.
 
-An end-to-end MLOps project that predicts residential property prices in Tehran,
-Iran. The project covers the full production lifecycle: data ingestion,
-feature engineering, model training with experiment tracking, a containerized
-REST API, CI/CD automation, observability, and cloud deployment.
+این پروژه مهندسی یادگیری ماشین را از ورود و اعتبارسنجی داده تا آموزش، API، پایش و استقرار پوشش می‌دهد. بخش پژوهشی جدید، داده‌های واقعیِ منتشرشده را با منبع و محدودیت‌های مشخص بررسی می‌کند؛ هدف، ارائهٔ نتیجهٔ قابل‌بازتولید است، نه ادعای دقت بدون شواهد.
 
-The focus of this project is **production engineering practices**, not model
-accuracy. See [Known Limitations](#known-limitations) for an honest discussion
-of the model's real-world performance.
+> **Current status — 2026-09-12:** latest full local test run: **239 passed · 10 skipped · 82% coverage**. Recent data collection remains partial. The monthly backtests below do **not** validate the individual-property API or establish five-year forecasting accuracy.
 
----
+## Contents
 
-## Table of Contents
-
-- [Live Demo](#live-demo)
-- [What This Project Demonstrates](#what-this-project-demonstrates)
+- [Engineering highlights](#engineering-highlights)
+- [Data and provenance](#data-and-provenance)
+- [Measured results](#measured-results)
 - [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Quick Start](#quick-start)
-- [API Reference](#api-reference)
-- [Project Structure](#project-structure)
-- [Development](#development)
-- [Testing](#testing)
-- [Observability](#observability)
-- [Deployment](#deployment)
-- [Model Details](#model-details)
-- [Known Limitations](#known-limitations)
-- [License](#license)
+- [Quick start](#quick-start)
+- [API](#api)
+- [Testing and reproducibility](#testing-and-reproducibility)
+- [Deployment and monitoring](#deployment-and-monitoring)
+- [Limitations and roadmap](#limitations-and-roadmap)
+- [Project structure](#project-structure)
 
----
+## Engineering highlights
 
-## Live Demo
+| Capability | Implementation / evidence |
+|---|---|
+| Data pipeline | Ingestion, cleaning, Pandera validation and dataset construction |
+| ML workflow | scikit-learn-compatible features, baselines, XGBoost, MLflow tracking and registry |
+| Model serving | FastAPI, validated request schemas, single and batch inference |
+| Operational tooling | Docker, GitHub Actions, Render configuration, Prometheus and structured logs |
+| Reproducible research | Pinned factual extracts, checksums, source-level attribution and offline report generation |
+| Honest evaluation | Calendar-aware backtests, validation-based model selection, no pooling of incompatible indicators |
+| Automated checks | Unit and integration tests; [latest full execution log](docs/reports/tehran_listing_archive/full-tests.txt) |
 
-The API is deployed on Render's free tier. Try it directly:
+**Portfolio focus:** building and testing an ML system while identifying where the available data cannot support a model claim. Operational availability, current-market accuracy and research completeness are separate questions.
 
-**Swagger UI (interactive docs):**
-https://tehran-house-price-api.onrender.com/docs
+## Data and provenance
 
-**Single prediction with curl:**
+The repository contains **separate datasets for separate tasks**. Their row counts must not be added together as if they were a single training set.
+
+| Dataset | Coverage | Size | Appropriate use |
+|---|---|---:|---|
+| Recent CBI-secondary transaction means | Collected months within 1400/06–1405/05 | 31 monthly observations | Retrospective aggregate-price backtesting |
+| Kilid published listing indicator | 1404/06–1405/05 | 12 monthly observations | Separate platform-indicator backtesting |
+| Public newspaper asking-price examples | 1401/11/06, 1402/06/05, 1405/06/17 | 131 rows | Data curation and feature-quality checks; not yet used to retrain the API |
+| Historical secondary city series | 1395–1399 | 60 monthly observations | Historical research only; not the latest five years |
+| Existing property-model pipeline | Legacy Kaggle housing dataset | See training documentation | Individual-property model workflow; separate from these research extracts |
+
+### Latest-five-year coverage
+
+The target is the **60 completed Jalali months from 1400/06 through 1405/05**, as of September 12, 2026. The current incomplete month, 1405/06, is excluded from this monthly window.
+
+There are 43 collected monthly observations across two **incompatible** measures. **17 months have neither measure.** This is not a complete, homogeneous five-year dataset. Missing prices are not imputed or reconstructed from reported percentage changes.
+
+![Coverage of the latest 60 completed Jalali months](docs/reports/tehran_recent/coverage.png)
+
+[Recent-period report](docs/reports/tehran_recent/README.md) · [Observations with sources](docs/reports/tehran_recent/observations.csv) · [Coverage ledger](docs/reports/tehran_recent/coverage.csv) · [Collection log](docs/reports/tehran_recent/collection-log.md)
+
+### Property-level asking-price archive
+
+The additional 131 rows are transcribed from public newspaper tables republished by IranJib / Donya-e-Eqtesad:
+
+| Publication date (Jalali) | Rows | Scope |
+|---|---:|---|
+| 1401/11/06 | 39 | Selected Tehran properties |
+| 1402/06/05 | 38 | Selected Tehran properties |
+| 1405/06/17 | 54 | Districts 8, 13 and 14; building ages 10–25 |
+
+Each row retains the source URL, source row number, publication date, reported location, area, raw building age and asking price. **“New-build” is preserved as a label rather than assigned an invented numeric age.** No contact details are collected.
+
+![Number of published examples per snapshot](docs/reports/tehran_listing_archive/sample_counts.png)
+
+These are published asking-price examples, **not verified transactions or independently verified unique properties**. Three snapshots are not five-year coverage. The latest sample has a different geographic composition, so connecting sample means would not establish a citywide price trend.
+
+[Archive report and caveats](docs/reports/tehran_listing_archive/README.md) · [CSV](data/external/tehran_listing_archive/listings.csv) · [Source manifest](data/external/tehran_listing_archive/manifest.json)
+
+## Measured results
+
+### Retrospective monthly backtests
+
+Each series is evaluated independently. The protocol uses six observations for warmup, selects among persistence, calendar drift and a six-observation log trend on **validation MAE**, and then reports held-out test performance. Predictions require the immediately preceding calendar month; gaps are not treated as adjacent observations.
+
+| Series | Test targets | Selected model | Selected MAPE | Last-month baseline MAPE |
+|---|---:|---|---:|---:|
+| CBI-secondary transaction mean | 13 eligible months | Calendar drift | 2.08% | **1.62%** |
+| Kilid listing indicator | 3 months, 1405/03–1405/05 | Calendar drift | **3.72%** | 8.31% |
+
+**The selected model loses to persistence on the transaction series.** That result is retained rather than choosing the test winner after seeing the test data. The Kilid test contains only three targets and is too small for a broad accuracy claim.
+
+These are final-vintage, retrospective backtests: publication delays and revisions are not fully controlled. The evaluation design was not preregistered. These percentages are **not errors for predicting an individual apartment's price**.
+
+![Recent-period backtest results](docs/reports/tehran_recent/backtest.png)
+
+[Detailed protocol, metrics and caveats](docs/reports/tehran_recent/README.md)
+
+### Historical reference — not recent-market validation
+
+The separate 1395–1399 city series contains 60 observations. Its 1399 rolling test reports **4.88% MAPE** for drift versus **5.82%** for last-month persistence. The secondary source's units have not been independently verified. This result neither substitutes for the latest five years nor validates the property API.
+
+[Historical report and charts](docs/reports/tehran_monthly/README.md)
+
+## Architecture
+
+```text
+Property-model workflow
+  Ingest → Clean → Validate → Features → Train / Evaluate
+                                            │
+                                            ├── MLflow tracking / registry
+                                            └── Model artifact
+                                                   │
+                                             FastAPI serving
+                                                   │
+                                       Logs / Metrics / Health probes
+                                                   │
+                                       Docker / CI / Render config
+
+Independent research workflow
+  Published sources → Curated extracts + provenance → Integrity checks
+                                                     │
+                                      Coverage ledger / temporal tests
+                                                     │
+                                         CSV / metrics / chart reports
+```
+
+**Stack:** Python, pandas, NumPy, scikit-learn, XGBoost, Pandera, MLflow, FastAPI, Pydantic, Docker, GitHub Actions, Prometheus, Grafana, pytest, Ruff and Black.
+
+## Quick start
+
+The package declares Python **3.10** support. The recorded research/test execution used **Python 3.11.2**, which is outside the declared version range; it is not evidence that the Python 3.10 CI environment was reproduced.
+
+```bash
+# Use Python 3.10 for the declared package environment.
+python3.10 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+pip install -e .
+
+# Tests
+pytest tests/ -q
+
+# API: requires a compatible trained model artifact/configuration.
+python -m tehran_house_price.api
+```
+
+To build the original property-model pipeline, review source-access requirements and configuration first:
+
+```bash
+cp .env.example .env
+# Configure required source access locally; never commit credentials.
+python -m tehran_house_price.data.build_dataset
+python -m tehran_house_price.models.train_pipeline
+python -m tehran_house_price.api
+```
+
+Research extracts are already pinned in the repository and can be analysed offline; those commands are listed below. Training and serving are not prerequisites for reproducing the research reports.
+
+## API
+
+**Configured public demo:** https://tehran-house-price-api.onrender.com/docs
+
+Live availability and deployed model freshness have not been reverified in this documentation update. Free-tier hosting may require a cold start. This is an engineering demo, not a current-market appraisal service.
 
 ```bash
 curl -X POST https://tehran-house-price-api.onrender.com/predict \
@@ -58,404 +175,114 @@ curl -X POST https://tehran-house-price-api.onrender.com/predict \
     "has_storage": true,
     "has_elevator": true
   }'
-Expected response:
+```
 
-JSON
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/predict` | Single-property prediction |
+| POST | `/predict/batch` | Batch prediction |
+| GET | `/docs` | Interactive OpenAPI documentation |
+| GET | `/version` | Application / model metadata |
+| GET | `/health` | Basic health status |
+| GET | `/health/live` | Process liveness |
+| GET | `/health/ready` | Readiness checks |
+| GET | `/metrics` | Prometheus metrics |
 
-{
-  "predicted_price_per_m2": 42368040.9,
-  "predicted_total_price": 3601283476.5,
-  "currency": "toman",
-  "model_name": "xgb_price_per_m2"
-}
-Note: The free tier spins down after 15 minutes of inactivity.
-The first request after idle may take 30-60 seconds (cold start).
+[API implementation notes](docs/phase_3_api.md)
 
-What This Project Demonstrates
-This project is designed to showcase production-grade ML engineering across
-the full stack:
+## Testing and reproducibility
 
-Capability	Implementation
-Reproducible data pipeline	Deterministic ingestion, cleaning, validation with Pandera
-Feature engineering	Custom sklearn-compatible transformers
-Experiment tracking	MLflow with parent/child runs and model registry
-Model serving	FastAPI with dependency injection and lifespan management
-Containerization	Multi-stage Docker builds with non-root user
-CI/CD	GitHub Actions for linting, testing, and image publishing
-Observability	Prometheus metrics, structured JSON logs, health probes
-Cloud deployment	Infrastructure-as-Code with render.yaml
-Configuration	Twelve-factor style with environment variables
-Testing	196 tests, 82% coverage, unit + integration + e2e
-Architecture
-text
+Latest full local run, September 12, 2026:
 
-                        ┌─────────────────────┐
-                        │   Kaggle Dataset    │
-                        └──────────┬──────────┘
-                                   │
-                                   ▼
-        ┌──────────────────────────────────────────────────┐
-        │  Data Layer                                       │
-        │  ingest → clean → validate → build_dataset       │
-        └──────────────────────┬───────────────────────────┘
-                               │
-                               ▼
-        ┌──────────────────────────────────────────────────┐
-        │  ML Pipeline                                      │
-        │  features → split → baselines + XGBoost          │
-        │                    │                              │
-        │                    └─→ MLflow (tracking+registry)│
-        └──────────────────────┬───────────────────────────┘
-                               │
-                               ▼
-        ┌──────────────────────────────────────────────────┐
-        │  Serving Layer                                    │
-        │  FastAPI + ModelService (in-memory)              │
-        │       │                                           │
-        │       ├─→ Prometheus /metrics                    │
-        │       ├─→ Structured logs (JSON)                 │
-        │       ├─→ /health/live, /health/ready            │
-        │       └─→ Background prediction logging          │
-        └──────────────────────┬───────────────────────────┘
-                               │
-                               ▼
-        ┌──────────────────────────────────────────────────┐
-        │  Deployment                                       │
-        │  Docker → GHCR → Render (auto-deploy on push)    │
-        └──────────────────────────────────────────────────┘
-Request flow:
+| Check | Recorded result |
+|---|---|
+| Passed tests | **239** |
+| Skipped tests | **10** |
+| Warnings | **42** |
+| Coverage | **82%** |
+| Duration | 14.61 seconds |
+| Runtime | Python 3.11.2 |
 
-text
+Skipped tests include checks requiring unavailable model artifacts or parquet inputs; they are not counted as successful verification. Software tests establish implementation behaviour, **not publisher truth or predictive accuracy**.
 
-Client
-  │
-  ▼
-Middleware (request_id + JSON logs + metrics)
-  │
-  ▼
-Endpoint handler
-  │
-  ├─→ ModelService.predict()
-  ├─→ record_prediction() (Prometheus counter)
-  └─→ BackgroundTask: log_prediction() (non-blocking)
-  │
-  ▼
-Response (with X-Request-ID header)
-Tech Stack
-Language & Frameworks
+[Full test log](docs/reports/tehran_listing_archive/full-tests.txt) · [Archive-specific checks](docs/reports/tehran_listing_archive/tests.txt) · [Research dependencies](requirements-research.txt)
 
-Python 3.10
-FastAPI 0.111 + Uvicorn (ASGI server)
-Pydantic v2 (validation + settings)
-Machine Learning
+After installing the project and research dependencies in a suitable environment:
 
-scikit-learn 1.5 (pipelines and transformers)
-XGBoost 2.0 (gradient boosted trees)
-Pandas 2.2, NumPy, PyArrow
-Data & Validation
+```bash
+# Regenerate research outputs offline from pinned inputs.
+PYTHONPATH=src .venv/bin/python -m tehran_house_price.data.recent
+PYTHONPATH=src .venv/bin/python -m tehran_house_price.data.listing_archive
+PYTHONPATH=src .venv/bin/python -m tehran_house_price.data.historical
 
-Pandera (dataframe schemas)
-kagglehub (dataset ingestion)
-MLOps
+# Run focused data/research checks.
+PYTHONPATH=src .venv/bin/pytest \
+  tests/unit/test_recent.py \
+  tests/unit/test_listing_archive.py \
+  tests/unit/test_historical.py -q --no-cov
 
-MLflow 2.14 (experiment tracking + model registry)
-Joblib (model serialization)
-Infrastructure
+# Reproduce the full-suite execution command.
+PYTHONPATH=src .venv/bin/pytest -o addopts='' \
+  --cov=tehran_house_price --cov-report=term-missing
+```
 
-Docker (multi-stage builds)
-Docker Compose (local orchestration)
-GitHub Actions (CI/CD)
-GitHub Container Registry (image hosting)
-Render (production deployment)
-Observability
+Checksums detect changes to the curated inputs; they do not independently certify the original sources. Extraction decisions, inferred unit corrections and source inconsistencies remain documented alongside the data.
 
-prometheus-client (metrics)
-Loguru (structured logging)
-PostgreSQL (optional prediction logging)
-Prometheus + Grafana (local monitoring stack)
-Quality
+## Deployment and monitoring
 
-pytest + pytest-cov
-ruff (linting)
-black (formatting)
-mypy (type checking)
-pre-commit (git hooks)
-Quick Start
-Option 1: Pull the pre-built Docker image
-Bash
+- [Dockerfile.prod](Dockerfile.prod): production-oriented container build.
+- [render.yaml](render.yaml): deployment configuration.
+- [GitHub workflows](.github/workflows): CI and image-build automation.
+- [Monitoring stack](docker-compose.observability.yml): local API, PostgreSQL, Prometheus and Grafana services.
+- Structured request logging, Prometheus metrics and health probes are implemented in the serving layer.
 
-docker pull ghcr.io/captain-jorf/tehran-house-price:latest
+```bash
+docker compose -f docker-compose.observability.yml up --build
+```
 
-docker run -p 8000:8000 \
-  -e ARTIFACT_DOWNLOAD_URL=https://github.com/Captain-Jorf/tehran-house-price/releases/download/v0.9.0-model/xgb_price_per_m2.joblib \
-  -e ARTIFACT_METADATA_DOWNLOAD_URL=https://github.com/Captain-Jorf/tehran-house-price/releases/download/v0.9.0-model/xgb_price_per_m2_metadata.json \
-  ghcr.io/captain-jorf/tehran-house-price:latest
+Review environment variables, model-artifact configuration and access controls before deploying publicly. Local monitoring defaults are not a production-security guarantee.
 
-# Then open http://localhost:8000/docs
-Option 2: Run from source
-Bash
+[Deployment notes](docs/phase_8_deployment.md) · [Observability notes](docs/phase_7_observability.md) · [MLflow notes](docs/phase_5_mlflow.md)
 
-# Clone
-git clone https://github.com/Captain-Jorf/tehran-house-price.git
-cd tehran-house-price
+## Limitations and roadmap
 
-# Create virtualenv (Python 3.10 required)
-python -m venv thpenv
-source thpenv/bin/activate           # macOS / Linux
-# .\thpenv\Scripts\Activate.ps1      # Windows PowerShell
+### What is not established
 
-# Install
-pip install -r requirements-dev.txt
-pip install -e .
+- A complete, homogeneous dataset covering the latest five years.
+- Current-market accuracy of the legacy individual-property model.
+- Transaction prices inferred from asking-price examples.
+- Five-year predictive validity inferred from a three-month test.
+- Live deployment availability or model freshness based only on repository configuration.
 
-# Run tests
-pytest tests/ -q
+The legacy model's training distribution may differ substantially from today's market. A blanket inflation multiplier would hide rather than validate that mismatch. The new newspaper archive has not been used to retrain or evaluate that model.
 
-# Start API (assumes model artifacts are already present in artifacts/models/)
-python -m tehran_house_price.api
-Option 3: Full pipeline from scratch
-Bash
+### Next milestones — planned, not completed
 
-# 1. Configure Kaggle credentials in .env
-cp .env.example .env
-# edit KAGGLE_API_TOKEN
+- [ ] Expand property-level archival coverage, especially 1400, 1403 and 1404.
+- [ ] Strengthen duplicate detection and review comparable geographic/age cohorts.
+- [ ] Build a property-level temporal train/validation/test benchmark.
+- [ ] Compare simple property baselines with stronger models on the same held-out data.
+- [ ] Report district-level errors, uncertainty and out-of-distribution limitations.
+- [ ] Add drift monitoring and a scheduled retraining workflow after a suitable fresh-data source is established.
 
-# 2. Run the data pipeline
-python -m tehran_house_price.data.build_dataset
+## Project structure
 
-# 3. Train all models (baselines + XGBoost)
-python -m tehran_house_price.models.train_pipeline
+```text
+src/tehran_house_price/
+├── api/          # Serving, routes, middleware and bootstrap
+├── data/         # Ingestion, validation and research report modules
+├── features/     # Feature transformers
+├── models/       # Training, baselines and evaluation
+├── monitoring/   # Prediction logging
+├── tracking/     # MLflow integration
+└── utils/        # Shared utilities
 
-# 4. Start the API
-python -m tehran_house_price.api
-API Reference
-Method	Endpoint	Description
-GET	/	Root, API metadata
-GET	/health	Basic health probe with model-loaded status
-GET	/health/live	Liveness probe (always 200 if process is alive)
-GET	/health/ready	Readiness probe (200 or 503 based on model + disk)
-GET	/version	Application and model metadata
-GET	/metrics	Prometheus metrics in text exposition format
-GET	/docs	Swagger UI
-GET	/redoc	ReDoc UI
-POST	/predict	Predict price for a single listing
-POST	/predict/batch	Predict prices for multiple listings
-Single prediction request schema
-JSON
+data/external/    # Small pinned research extracts with provenance
+docs/reports/     # Detailed reports, metrics, charts and test evidence
+tests/            # Unit and integration tests
+.github/workflows/ # CI and container workflows
+```
 
-{
-  "district": "Punak",
-  "area_m2": 85,
-  "rooms": 2,
-  "has_parking": true,
-  "has_storage": true,
-  "has_elevator": true
-}
-Response schema
-JSON
+## License
 
-{
-  "predicted_price_per_m2": 42368040.9,
-  "predicted_total_price": 3601283476.5,
-  "currency": "toman",
-  "model_name": "xgb_price_per_m2"
-}
-Project Structure
-text
-
-tehran-house-price/
-├── .github/workflows/          # CI and Docker workflows
-├── configs/                    # YAML configs (base, logging)
-├── data/                       # gitignored: raw, interim, processed
-├── artifacts/                  # gitignored: models, splits, evaluations
-├── docs/                       # phase-by-phase documentation
-├── grafana/                    # Grafana dashboards + provisioning
-├── prometheus/                 # Prometheus scrape config
-├── src/tehran_house_price/
-│   ├── api/                    # FastAPI app, routes, middleware, bootstrap
-│   ├── data/                   # ingest, clean, validate, build_dataset
-│   ├── features/               # sklearn-compatible transformers
-│   ├── models/                 # split, baselines, train, evaluation, pipeline
-│   ├── monitoring/             # prediction logger (async, PostgreSQL)
-│   ├── tracking/               # MLflow setup, run logger, model registry
-│   └── utils/                  # paths, logger
-├── tests/
-│   ├── unit/                   # unit tests (mocked dependencies)
-│   └── integration/            # E2E and pipeline tests
-├── Dockerfile                  # dev build (Iran mirrors)
-├── Dockerfile.prod             # production build (standard mirrors)
-├── docker-compose.yml          # local dev
-├── docker-compose.observability.yml  # api + postgres + prometheus + grafana
-├── render.yaml                 # Render deployment config (IaC)
-├── pyproject.toml              # package + tool configs
-├── requirements.txt            # runtime deps
-└── requirements-dev.txt        # dev deps
-Development
-Setup pre-commit hooks
-Bash
-
-pre-commit install
-Runs on every commit:
-
-ruff (lint + auto-fix)
-ruff-format
-black
-trailing whitespace, end-of-file, large files, merge conflict checks
-Common commands
-Bash
-
-# Data pipeline
-python -m tehran_house_price.data.build_dataset
-
-# Training (all models)
-python -m tehran_house_price.models.train_pipeline
-
-# Training (skip baselines)
-python -m tehran_house_price.models.train_pipeline --skip-baselines
-
-# API (dev mode)
-python -m tehran_house_price.api
-
-# Linting and formatting
-ruff check --fix src tests
-black src tests
-mypy src
-
-# Local observability stack (api + postgres + prometheus + grafana)
-docker-compose -f docker-compose.observability.yml up --build
-Testing
-The project has 196 tests covering unit, integration, and end-to-end scenarios.
-
-Bash
-
-# All tests
-pytest tests/ -q
-
-# Unit tests only
-pytest tests/unit/ -q
-
-# With coverage
-pytest tests/ --cov=src/tehran_house_price --cov-report=term-missing
-Coverage: 82%
-Test runtime: ~30 seconds
-
-Tests that require model artifacts (which are gitignored) are automatically
-skipped in CI. Locally they run once artifacts exist under artifacts/models/.
-
-Observability
-Every observability feature is opt-in via environment variables and
-wrapped in defensive try/except so that a monitoring failure never crashes
-the API.
-
-Feature	Env Var	Default
-Structured JSON request logs	REQUEST_LOGGING_ENABLED	true
-Prometheus /metrics endpoint	PROMETHEUS_ENABLED	true
-Deep /health/live + /health/ready	DEEP_HEALTHCHECK_ENABLED	true
-Async prediction logging to PostgreSQL	PREDICTION_LOGGING_ENABLED	false
-Master switch	OBSERVABILITY_ENABLED	true
-Local monitoring stack
-Bash
-
-docker-compose -f docker-compose.observability.yml up --build
-Then:
-
-API: http://localhost:8000
-Prometheus: http://localhost:9090
-Grafana: http://localhost:3000 (anonymous admin, no login)
-PostgreSQL: localhost:5432
-Sample metrics
-text
-
-http_requests_total{method="POST",path="/predict",status_code="200"} 42
-http_request_duration_seconds_bucket{le="0.1",path="/predict"} 40
-model_predictions_total{endpoint="/predict",model_name="xgb_price_per_m2"} 42
-process_resident_memory_bytes 2.35e+08
-Deployment
-The API is deployed to Render using Infrastructure-as-Code via
-render.yaml. Any push to main triggers auto-deploy.
-
-Deployment strategy:
-
-Docker image is built from Dockerfile.prod (multi-stage, non-root user, ~450 MB)
-Container starts and runs ensure_model_artifacts() on startup
-If model files are missing, they are downloaded atomically from
-GitHub Releases (v0.9.0-model tag)
-ModelService.load() loads the model into memory
-Uvicorn starts serving on port 8000
-Render's health check hits /health every 30 seconds
-Why download the model at startup instead of baking it into the image?
-
-Keeps the image small and generic
-Model can be swapped without rebuilding the image
-Code lifecycle is separated from model lifecycle
-Model files can be hosted anywhere (GitHub Releases, S3, HF Hub, MLflow Registry)
-Model Details
-Best model: xgb_price_per_m2 (XGBoost regressor)
-
-Metric	Value
-Target	price_per_m2 (then multiplied by area)
-Features	area, rooms, parking, storage, elevator, district
-Training data	3,235 cleaned Tehran listings from Kaggle (2020-2021)
-Test R²	0.74
-Test MAE	~8.5 M Toman/m²
-Test RMSE	~15 M Toman/m²
-Baselines for comparison:
-
-baseline_mean: global mean of prices
-baseline_district_median: median price by district
-Baselines are trained and evaluated in the same pipeline. XGBoost beats
-both on all metrics, which is the sanity check we expect.
-
-Known Limitations
-Being upfront about the model's real-world performance is more valuable
-than pretending it is perfect.
-
-1. Data Drift: The Training Data is from 2020
-The Kaggle dataset used for training reflects the Tehran housing market
-around 2020-2021. Since then, prices have risen approximately 6-7x due
-to inflation and currency devaluation.
-
-Concrete example:
-For a 100 m² apartment in Punak, the model predicts approximately
-42 M Toman/m², while the current market price (as of 2026) is
-approximately 250-300 M Toman/m².
-
-This is a textbook example of concept drift: the relationship between
-features and target has fundamentally changed over time, even though the
-features themselves remain the same.
-
-2. Why This Is Not Fixed with a Multiplier
-Applying a naive inflation factor would hide the real problem. It would
-also:
-
-Miss district-specific inflation rates (luxury areas inflated faster)
-Fail to capture non-linear market dynamics
-Give a false sense of accuracy
-3. The Proper Fix: A Retraining Pipeline
-The infrastructure to solve this problem is already in place in this project:
-
-Component	Status	Purpose
-MLflow Registry	✅ Implemented	Version and stage model artifacts
-Startup model download	✅ Implemented	Swap models without rebuilding Docker
-Prediction logging (PostgreSQL)	✅ Implemented	Capture production inputs for retrain
-CI/CD pipeline	✅ Implemented	Automated testing on every change
-Divar scraper skeleton	✅ Implemented	Foundation for fresh data collection
-Scheduled retraining (Airflow / Prefect)	⏳ Future work	Weekly/monthly retrain on fresh data
-Drift detection (Evidently AI)	⏳ Future work	Alert when input distribution shifts
-4. Missing Features
-The model uses only 6 features. Real-world price also depends on:
-
-Year built and renovation status
-Floor number
-Building orientation
-Distance to metro/BRT
-Interior condition
-Neighborhood safety scores
-Adding these features would likely push R² above 0.85 on fresh data.
-
-5. What This Project Actually Proves
-The value of this project is not model accuracy — it is the
-production infrastructure around the model. Any of the above
-limitations can be addressed by re-running the existing pipeline
-with better data. The MLOps stack around it is what takes months
-to build correctly.
+Package metadata declares [MIT](pyproject.toml); a standalone license file is not currently present in this checkout. External datasets and publisher content have their own terms; the code license does **not** grant blanket rights to upstream data.

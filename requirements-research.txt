@@ -1,0 +1,7 @@
+# Minimal environment for the historical dataset, backtest (full project dependencies are needed for tests).
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.5.0
+matplotlib==3.9.4
+PyYAML==6.0.3
+pytest==8.2.2

@@ -79,3 +79,18 @@ mlartifacts/
 
 # docker
 *.pid
+
+# Small, pinned historical research dataset (60 monthly observations)
+!data/external/tehran_monthly/
+!data/external/tehran_monthly/*.csv
+!data/external/tehran_monthly/*.json
+
+# Auditable recent-period research extracts; no individual/private listings
+!data/external/tehran_recent/
+!data/external/tehran_recent/*.csv
+!data/external/tehran_recent/*.json
+
+# Public newspaper asking-price examples, without contact details
+!data/external/tehran_listing_archive/
+!data/external/tehran_listing_archive/*.csv
+!data/external/tehran_listing_archive/*.json

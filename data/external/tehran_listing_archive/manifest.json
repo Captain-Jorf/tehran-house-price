@@ -1,0 +1,33 @@
+{
+  "as_of": "2026-09-12",
+  "sha256": "03c04252aae037bc8e80e4bc3cc63c1c36e612a89ef0b225069f0fc8e96181c6",
+  "row_count": 131,
+  "extraction": "Manual transcription of fetch_page text tables; whitespace normalized. Not raw HTML, not independently audited.",
+  "sources": {
+    "104477": {
+      "publication_date_jalali": "1401-11-06",
+      "rows": 39,
+      "url": "https://www.iranjib.ir/showprint/104477/"
+    },
+    "111526": {
+      "publication_date_jalali": "1402-06-05",
+      "rows": 38,
+      "url": "https://www.iranjib.ir/showprint/111526/"
+    },
+    "147516": {
+      "publication_date_jalali": "1405-06-17",
+      "rows": 54,
+      "url": "https://www.iranjib.ir/showprint/147516/"
+    }
+  },
+  "limitations": [
+    "Published asking-price examples, not verified transactions or unique verified properties.",
+    "Publication date is not listing creation date.",
+    "Three snapshots only; NOT five years of coverage.",
+    "1405-06 snapshot is current partial month: excluded from completed-month aggregate dataset.",
+    "2026 sample restricted to districts 8,13,14 and ages 10–25: composition differs.",
+    "Unknown numeric age for new-build preserved blank; not assigned zero.",
+    "Publisher prose district 13 minimum 155 conflicts with table rows 140/150: retain table.",
+    "No blanket upstream reuse license asserted."
+  ]
+}

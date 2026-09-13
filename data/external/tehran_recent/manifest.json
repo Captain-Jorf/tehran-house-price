@@ -1,0 +1,9 @@
+{
+  "as_of": "2026-09-12",
+  "files": {
+    "dlearn_city_extract.csv": "8e34d6fd922f9835c4b8a8f708e59a0b4ab4bd3a8f091454698faec488210a09",
+    "observations.json": "48bd2c01407062f8df593dad46a426701485170338934acfc1ee1579852cc7a4"
+  },
+  "curation": "manual factual extraction; SHA-256 proves file integrity, not truth or completeness",
+  "coverage_status": "partial; not a complete five-year transaction dataset"
+}

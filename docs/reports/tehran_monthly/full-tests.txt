@@ -1,0 +1,154 @@
+sssssss.................s............................................... [ 31%]
+........................................................................ [ 63%]
+................s........................................s.............. [ 95%]
+..........                                                               [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/starlette/formparsers.py:12
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/starlette/formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+.venv/lib/python3.11/site-packages/starlette/testclient.py:41
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/starlette/testclient.py:41: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    [], typing.ContextManager[anyio.abc.BlockingPortal]
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:61
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:61: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("togetherai_api_key", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:75
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:75: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("cohere_api_key", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:83
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:83: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("ai21labs_api_key", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:92
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:92: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("mosaicml_api_key", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:122
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:122: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("openai_api_key", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:179
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:179: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("anthropic_api_key", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:187
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:187: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("palm_api_key", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:227
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:227: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("mistral_api_key", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:308
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:308: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("provider", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:329
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:329: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("config", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:369
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:369: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("name")
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:379
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:379: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("model", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:390
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:390: PydanticDeprecatedSince20: Pydantic V1 style `@root_validator` validators are deprecated. You should migrate to Pydantic V2 style `@model_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @root_validator(skip_on_failure=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:412
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:412: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("route_type", pre=True)
+
+.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:418
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/mlflow/gateway/config.py:418: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("limit", pre=True)
+
+.venv/lib/python3.11/site-packages/pydantic/_internal/_config.py:284
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/pydantic/_internal/_config.py:284: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+tests/integration/test_train_pipeline.py::test_run_trains_all_models_and_writes_comparison
+tests/integration/test_train_pipeline.py::test_run_skip_baselines_does_not_retrain_them
+tests/integration/test_train_pipeline.py::test_run_skip_baselines_does_not_retrain_them
+  /usr/lib/python3.11/importlib/__init__.py:126: DeprecationWarning: The distutils package is deprecated and slated for removal in Python 3.12. Use setuptools or check PEP 632 for potential alternatives
+    return _bootstrap._gcd_import(name[level:], package, level)
+
+tests/integration/test_train_pipeline.py::test_run_trains_all_models_and_writes_comparison
+tests/integration/test_train_pipeline.py::test_run_skip_baselines_does_not_retrain_them
+tests/integration/test_train_pipeline.py::test_run_skip_baselines_does_not_retrain_them
+  /home/user/tehran-house-price/src/tehran_house_price/tracking/registry.py:78: FutureWarning: ``mlflow.tracking.client.MlflowClient.transition_model_version_stage`` is deprecated since 2.9.0. Model registry stages will be removed in a future major release. To learn more about the deprecation of model registry stages, see our migration guide here: https://mlflow.org/docs/latest/model-registry.html#migrating-from-stages
+    client.transition_model_version_stage(
+
+tests/integration/test_train_pipeline.py::test_run_skip_baselines_does_not_retrain_them
+tests/integration/test_train_pipeline.py::test_run_skip_baselines_does_not_retrain_them
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/_distutils_hack/__init__.py:18: UserWarning: Distutils was imported before Setuptools, but importing Setuptools also replaces the `distutils` module in `sys.modules`. This may lead to undesirable behaviors or errors. To avoid these issues, avoid using distutils directly, ensure that setuptools is installed in the traditional way (e.g. not an editable install), and/or make sure that setuptools is always imported before distutils.
+    warnings.warn(
+
+tests/integration/test_train_pipeline.py::test_run_skip_baselines_does_not_retrain_them
+tests/integration/test_train_pipeline.py::test_run_skip_baselines_does_not_retrain_them
+  /home/user/tehran-house-price/.venv/lib/python3.11/site-packages/_distutils_hack/__init__.py:33: UserWarning: Setuptools is replacing distutils.
+    warnings.warn("Setuptools is replacing distutils.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform linux, python 3.11.2-final-0 -----------
+Name                                                     Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------------------
+src/tehran_house_price/api/__main__.py                       3      3     0%   3-6
+src/tehran_house_price/api/app.py                           75     14    81%   63-79
+src/tehran_house_price/api/bootstrap.py                     50     18    64%   42, 51-72
+src/tehran_house_price/api/dependencies.py                   7      0   100%
+src/tehran_house_price/api/errors.py                        37      0   100%
+src/tehran_house_price/api/health.py                        35      2    94%   77, 81
+src/tehran_house_price/api/metrics.py                       43      2    95%   157, 160
+src/tehran_house_price/api/middleware.py                    70      3    96%   29, 94, 98
+src/tehran_house_price/api/model_loader.py                  92      3    97%   99-100, 178
+src/tehran_house_price/api/run.py                           24     11    54%   26-59, 64-75, 86
+src/tehran_house_price/api/schemas.py                       75      1    99%   79
+src/tehran_house_price/data/build_dataset.py                74     21    72%   61, 69, 82, 127, 157-191, 195
+src/tehran_house_price/data/clean.py                       139     25    82%   43-52, 213, 254-256, 260-270, 274-276
+src/tehran_house_price/data/constants.py                    33      0   100%
+src/tehran_house_price/data/historical.py                  107     52    51%   94-148, 152-191, 195
+src/tehran_house_price/data/ingest_kaggle.py                84     20    76%   35-43, 50-52, 102, 109-115, 140
+src/tehran_house_price/data/schema.py                       56      0   100%
+src/tehran_house_price/data/scrape_divar.py                  0      0   100%
+src/tehran_house_price/data/validate.py                     80     28    65%   86-90, 100-101, 128, 135-141, 145-164, 168-170
+src/tehran_house_price/features/build_features.py           15      0   100%
+src/tehran_house_price/features/constants.py                11      0   100%
+src/tehran_house_price/features/transformers.py             76      2    97%   52, 88
+src/tehran_house_price/models/baseline.py                  114     18    84%   86, 229-241, 255-259, 263
+src/tehran_house_price/models/evaluation.py                134     36    73%   117, 280-328, 332
+src/tehran_house_price/models/split.py                      86     21    76%   85, 204, 211-229, 239-256, 260
+src/tehran_house_price/models/train.py                     128     25    80%   154, 157-160, 286-310, 321-325, 329
+src/tehran_house_price/models/train_pipeline.py            223     51    77%   82, 85-86, 107, 115, 118-119, 133-134, 138-139, 143, 170-171, 177-178, 203, 235-236, 246, 278-279, 294-295, 302, 409-446, 450-454, 458
+src/tehran_house_price/monitoring/prediction_logger.py      34     18    47%   24-35, 57-73
+src/tehran_house_price/monitoring/schemas.py                13      0   100%
+src/tehran_house_price/settings.py                          38      1    97%   66
+src/tehran_house_price/tracking/mlflow_setup.py             59      0   100%
+src/tehran_house_price/tracking/registry.py                 50     24    52%   37-38, 45-47, 69-70, 73, 84-86, 102-118
+src/tehran_house_price/tracking/run_logger.py               74     12    84%   51-52, 60, 79-80, 98-99, 112-113, 121, 126-127
+src/tehran_house_price/utils/logger.py                      30      1    97%   50
+src/tehran_house_price/utils/paths.py                       20      3    85%   22, 26, 34
+--------------------------------------------------------------------------------------
+TOTAL                                                     2189    415    81%
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/integration/test_api_e2e.py:41: real model artifact not available
+SKIPPED [1] tests/integration/test_api_e2e.py:50: real model artifact not available
+SKIPPED [1] tests/integration/test_api_e2e.py:61: real model artifact not available
+SKIPPED [1] tests/integration/test_api_e2e.py:86: real model artifact not available
+SKIPPED [1] tests/integration/test_api_e2e.py:130: real model artifact not available
+SKIPPED [1] tests/integration/test_api_e2e.py:147: real model artifact not available
+SKIPPED [1] tests/integration/test_api_e2e.py:165: real model artifact not available
+SKIPPED [1] tests/unit/test_api_endpoints.py:224: real model artifact not available
+SKIPPED [1] tests/unit/test_model_loader.py:232: real model artifact not available
+SKIPPED [1] tests/unit/test_split.py:177: processed parquet not present; skipping integration check
+216 passed, 10 skipped, 28 warnings in 12.61s
